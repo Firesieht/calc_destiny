@@ -17,6 +17,65 @@ const LATIN_VALUES = {
 };
 
 // Полная таблица родовых программ
+const UNREGISTERED_PROGRAMS = {
+  '5,15,20': { id: 1, name: 'Бунтарь' },
+  '7,12,19': { id: 2, name: 'Воин' },
+  '3,7,22': { id: 3, name: 'Узник; несвободная душа' },
+  '5,6,17': { id: 4, name: 'Гордыня' },
+  '10,16,21': { id: 5, name: 'Духовный жрец' },
+  '6,6,18': { id: 6, name: 'Любовная магия' },
+  '9,9,18': { id: 7, name: 'Волшебник; не принятие знаний' },
+  '3,9,12': { id: 8, name: 'Одинокая женщина' },
+  '5,8,15': { id: 9, name: 'Предательства; страсти в семье' },
+  '6,8,20': { id: 10, name: 'Разочарование рода' },
+  '6,15,18': { id: 11, name: 'Темный маг' },
+  '3,9,21': { id: 12, name: 'Надзиратель' },
+  '8,11,15': { id: 13, name: 'Физическая агрессия' },
+  '6,11,17': { id: 14, name: 'Загубленный талант' },
+  '4,12,16': { id: 15, name: 'Император' },
+  '4,10,21': { id: 16, name: 'Угнетенная душа' },
+  '3,12,18': { id: 17, name: 'Физические страдания' },
+  '6,9,15': { id: 18, name: 'Мир страстей и сказок' },
+  '6,8,14': { id: 19, name: 'Диктатор' },
+  '3,10,13': { id: 20, name: 'Суицид' },
+  '3,19,22': { id: 21, name: 'Нерожденное дитя' },
+  '7,13,21': { id: 22, name: 'Разрушение; смерть многим душам' },
+  '6,14,20': { id: 23, name: 'Душа; которую принесли в жертву' },
+  '7,10,21': { id: 24, name: 'Воин веры' },
+  '3,10,20': { id: 25, name: 'Обман со стороны женщин; проблемы с материнством' },
+  '8,8,18': { id: 26, name: 'Страх разочарования; обмана' },
+  '4,9,22': { id: 27, name: 'Тюремная программа' },
+  '8,22,22': { id: 28, name: 'Тюремная программа' },
+  '5,10,15': { id: 29, name: 'Высокая духовная миссия объединения людей' },
+  '5,5,18': { id: 30, name: 'Магические знания' },
+  '7,19': { id: 31, name: 'Достаток' },
+  '5,11,16': { id: 32, name: 'Обесценивание' },
+  '10,11,19': { id: 33, name: 'Выгорание; вспышка' },
+  '7,14,21': { id: 34, name: 'Пытки; издевательства' },
+  '8,14,22': { id: 35, name: 'Скупость' },
+  '9,11,20': { id: 36, name: 'Вырождение рода' },
+  '3,11,19': { id: 37, name: 'Бесплодие' },
+  '7,13,20': { id: 38, name: 'Опасность в дороге; в движении вперед; в принятии решений' },
+  '7,7,18': { id: 39, name: 'Страх карьерной реализации; дороги' },
+  '4,11,20': { id: 40, name: 'Укрощение агрессии; дресировщик' },
+  '7,8,17': { id: 41, name: 'Особая миссия; эксклюзив' },
+  '5,14,19': { id: 42, name: 'Миллионер' },
+  '6,15,21': { id: 43, name: 'Разгул' },
+  '10,10,18': { id: 44, name: 'Страх доверия Богу' },
+  '11,11,18': { id: 45, name: 'Страх принятия магической силы' },
+  '6,12,18': { id: 46, name: 'Комплекс зависимых отношений' },
+  '9,10,19': { id: 47, name: 'Чистый поток' },
+  '7,15,22': { id: 48, name: 'Адреналин' },
+  '8,9,17': { id: 49, name: 'Сокрытие истины' },
+  '7,9,16': { id: 50, name: 'Молчание' },
+  '8,9,19': { id: 56, name: 'Безнадега' },
+  '6,7,13': { id: 61, name: 'Физическое насилие и эмоциональное унижение' },
+  '5,12,17': { id: 63, name: 'Публичный позор' },
+  '5,13,18': { id: 64, name: 'Сакральная жертва' },
+  '5,10,22': { id: 71, name: 'Инквизиция' },
+  '7,11,18': { id: 75, name: 'Боевой маг' },
+};
+
 const ANCESTRAL_PROGRAMS = {
   '5,15,20': { id: 1, name: 'Бунтарь' },
   '7,12,19': { id: 2, name: 'Воин' },
@@ -150,6 +209,269 @@ class MatrixCalculator extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.calculateMatrix = this.calculateMatrix.bind(this);
     this.renderError = this.renderError.bind(this);
+    this.loadDataFromURL = this.loadDataFromURL.bind(this);
+    this.saveDataToURL = this.saveDataToURL.bind(this);
+    this.saveToPDF = this.saveToPDF.bind(this);
+    this.saveCalculation = this.saveCalculation.bind(this);
+
+  }
+  componentDidMount() {
+    this.loadDataFromURL();
+    this.userrouting()
+  }
+
+  userrouting() {
+    if (this.getUserLogin() && window.location.pathname.includes('unreg')) {
+      window.location.replace('/calc' + window.location.search)
+    } else if (!this.getUserLogin() && !window.location.pathname.includes('unreg')){
+      window.location.replace('/calc_unreg' + window.location.search)
+    }
+  }
+  // Функция загрузки данных из URL
+  loadDataFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('data');
+    
+    if (encodedData) {
+      console.log('Найдены данные в URL:', encodedData);
+      try {
+        const decodedData = decodeURIComponent(encodedData);
+        const formData = JSON.parse(decodedData);
+        
+        // Проверяем, что загруженные данные содержат все необходимые поля
+        const validKeys = ['surname', 'name', 'patronymic', 'day', 'month', 'year', 'gender', 'fatherSurname', 'motherMaidenName'];
+        const isValidData = validKeys.every(key => formData.hasOwnProperty(key));
+        
+        if (isValidData) {
+          console.log('FORMDATA из URL:', formData);
+          this.setState({ 
+            formData: {
+              ...this.state.formData,
+              ...formData
+            }
+          }, () => {
+            console.log('ЧЕК - state обновлен:', this.state.formData);
+            // Автоматически выполняем расчет, если данные валидны
+            setTimeout(() => {
+              if (this.validateForm()) {
+                this.calculateMatrix();
+              }
+            }, 100);
+          });
+        } else {
+          console.log('Данные из URL невалидны:', formData);
+        }
+      } catch (error) {
+        console.warn('Ошибка при загрузке данных из URL:', error);
+      }
+    } else {
+      console.log('Нет данных в URL');
+    }
+  }
+
+  // Функция сохранения данных в URL
+  saveDataToURL() {
+    try {
+      const encodedData = encodeURIComponent(JSON.stringify(this.state.formData));
+      const newURL = new URL(window.location);
+      newURL.searchParams.set('data', encodedData);
+      
+      // Обновляем URL без перезагрузки страницы
+      window.history.pushState({ path: newURL.href }, '', newURL.href);
+      
+      // Показываем уведомление о том, что ссылка обновлена
+      this.showNotification('Ссылка обновлена! Теперь вы можете поделиться расчетом.');
+    } catch (error) {
+      console.warn('Ошибка при сохранении данных в URL:', error);
+    }
+  }
+// Полностью заменяем функцию saveToPDF:
+  saveToPDF() {
+    // Проверяем наличие результатов
+    if (!this.state.results) {
+      alert('Сначала необходимо выполнить расчет');
+      return;
+    }
+  
+    // Проверяем загрузку библиотек
+    if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
+      alert('Библиотеки для PDF еще не загружены. Попробуйте через несколько секунд.');
+      return;
+    }
+  
+    // Находим SVG с результатами
+    const svg = document.querySelector('svg[viewBox="0 0 2527 2360"]');
+    
+    if (!svg) {
+      alert('SVG с результатами не найден');
+      return;
+    }
+  
+    // Создаем временный контейнер с фиксированными размерами
+    const tempContainer = document.createElement('div');
+    tempContainer.style.cssText = `
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1200px;
+      height: auto;
+      background: white;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    `;
+  
+    // Клонируем SVG
+    const svgClone = svg.cloneNode(true);
+    svgClone.style.cssText = `
+      width: 1200px;
+      height: auto;
+      display: block;
+    `;
+  
+    // Добавляем заголовок
+    const header = document.createElement('div');
+    header.style.cssText = `
+      margin-bottom: 20px;
+      text-align: center;
+    `;
+    header.innerHTML = `
+      <h1 style="margin: 0; font-size: 24px; color: #333;">Матричный расчет личности</h1>
+      <p style="margin: 5px 0; font-size: 16px; color: #666;">
+        ${this.state.formData.surname} ${this.state.formData.name} ${this.state.formData.patronymic}
+      </p>
+      <p style="margin: 5px 0; font-size: 14px; color: #666;">
+        Дата рождения: ${this.state.formData.day}.${this.state.formData.month}.${this.state.formData.year} | 
+        Дата создания: ${new Date().toLocaleDateString('ru-RU')}
+      </p>
+    `;
+  
+    tempContainer.appendChild(header);
+    tempContainer.appendChild(svgClone);
+    document.body.appendChild(tempContainer);
+  
+    // Генерируем PDF
+    html2canvas(tempContainer, {
+      scale: 1.5, // Уменьшаем scale для меньшего размера файла
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      width: 1240, // фиксированная ширина
+      height: tempContainer.scrollHeight
+    }).then(canvas => {
+      // Удаляем временный контейнер
+      document.body.removeChild(tempContainer);
+      
+      const { jsPDF } = window.jspdf;
+      
+      // Вычисляем размеры для A4
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = imgHeight / imgWidth;
+      
+      // A4 размеры в пикселях (при 72 DPI)
+      const a4Width = 595.28;
+      const a4Height = 841.89;
+      
+      let pdfWidth, pdfHeight;
+      
+      if (ratio > a4Height / a4Width) {
+        // Если изображение слишком высокое, используем альбомную ориентацию
+        pdfWidth = a4Height;
+        pdfHeight = a4Width;
+      } else {
+        // Обычная портретная ориентация
+        pdfWidth = a4Width;
+        pdfHeight = a4Height;
+      }
+      
+      const pdf = new jsPDF({
+        orientation: ratio > a4Height / a4Width ? 'landscape' : 'portrait',
+        unit: 'pt',
+        format: 'a4'
+      });
+      
+      // Масштабируем изображение под размер страницы
+      const finalWidth = pdfWidth - 40; // отступы по 20pt с каждой стороны
+      const finalHeight = (imgHeight * finalWidth) / imgWidth;
+      
+      if (finalHeight > pdfHeight - 40) {
+        // Если не влезает, масштабируем по высоте
+        const scaledHeight = pdfHeight - 40;
+        const scaledWidth = (imgWidth * scaledHeight) / imgHeight;
+        
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg', 0.7), // Используем JPEG с качеством 70%
+          'JPEG',
+          (pdfWidth - scaledWidth) / 2,
+          20,
+          scaledWidth,
+          scaledHeight
+        );
+      } else {
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg', 0.7),
+          'JPEG',
+          20,
+          20,
+          finalWidth,
+          finalHeight
+        );
+      }
+      
+      // Сохраняем файл
+      const fileName = `matrix_${this.state.formData.surname}_${this.state.formData.name}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+      
+    }).catch(error => {
+      // Удаляем временный контейнер в случае ошибки
+      if (document.body.contains(tempContainer)) {
+        document.body.removeChild(tempContainer);
+      }
+      console.error('Ошибка при создании PDF:', error);
+      alert('Ошибка при создании PDF файла');
+    });
+  }
+  
+  // Функция показа уведомления
+  showNotification(message) {
+    // Создаем элемент уведомления
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4caf50;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      max-width: 300px;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Анимация появления
+    setTimeout(() => {
+      notification.style.opacity = '1';
+      notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Удаление через 4 секунды
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, 4000);
   }
 
   // Функция приведения числа
@@ -158,6 +480,10 @@ class MatrixCalculator extends React.Component {
       num = num.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
     }
     return num;
+  }
+
+  moduleNumber(num) {
+    return num % 22 == 0? 22 : num % 22
   }
 
   // Валидаторы
@@ -246,6 +572,7 @@ class MatrixCalculator extends React.Component {
     return this.reduceNumber(sum);
   }
 
+  
   // Функция создания ключа для поиска программы (сортированные числа)
   createProgramKey(num1, num2, num3 = null) {
     if (num3 === null) {
@@ -256,7 +583,10 @@ class MatrixCalculator extends React.Component {
 
   // Функция поиска программы по ключу
   findProgram(key) {
-    return ANCESTRAL_PROGRAMS[key] || null;
+    if (this.getUserLogin()) {
+      return ANCESTRAL_PROGRAMS[key] || null;
+    }
+    return UNREGISTERED_PROGRAMS[key] || null;
   }
 
   // Функция расчета всех программ
@@ -283,36 +613,37 @@ class MatrixCalculator extends React.Component {
       addProgram(this.createProgramKey(b, t, this.reduceNumber(b + t)), 'Мужской род - 1 колено Небо', `${b} - ${t} - ${this.reduceNumber(b + t)}`);
       addProgram(this.createProgramKey(a, t, this.reduceNumber(a + t)), 'Мужской род - 1 колено Земля', `${a} - ${t} - ${this.reduceNumber(a + t)}`);
       addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(t + t), this.reduceNumber(b + a + t * 2)), 'Мужской род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(t + t)} - ${this.reduceNumber(b + a + t * 2)}`);
-      
-      // 2 колено
-      addProgram(this.createProgramKey(k, v2, this.reduceNumber(k + v2)), 'Мужской род - 2 колено Небо', `${k} - ${v2} - ${this.reduceNumber(k + v2)}`);
-      addProgram(this.createProgramKey(j, v2, this.reduceNumber(j + v2)), 'Мужской род - 2 колено Земля', `${j} - ${v2} - ${this.reduceNumber(j + v2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(v2 + v2), this.reduceNumber(k + j + v2 * 2)), 'Мужской род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(v2 + v2)} - ${this.reduceNumber(k + j + v2 * 2)}`);
-      
-      // 3 колено
-      addProgram(this.createProgramKey(g, u2, this.reduceNumber(g + u2)), 'Мужской род - 3 колено Небо', `${g} - ${u2} - ${this.reduceNumber(g + u2)}`);
-      addProgram(this.createProgramKey(f, u2, this.reduceNumber(f + u2)), 'Мужской род - 3 колено Земля', `${f} - ${u2} - ${this.reduceNumber(f + u2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(u2 + u2), this.reduceNumber(g + f + u2 * 2)), 'Мужской род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(u2 + u2)} - ${this.reduceNumber(g + f + u2 * 2)}`);
-      
-      // 4 колено
-      addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-      addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(e + e), this.reduceNumber(z + z), this.reduceNumber(e + e + z * 2)), 'Мужской род - 4 колено Целостная', `${this.reduceNumber(e + e)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + e + z * 2)}`);
-      
-      // 5 колено
-      addProgram(this.createProgramKey(i, x2, this.reduceNumber(i + x2)), 'Мужской род - 5 колено Небо', `${i} - ${x2} - ${this.reduceNumber(i + x2)}`);
-      addProgram(this.createProgramKey(h, x2, this.reduceNumber(h + x2)), 'Мужской род - 5 колено Земля', `${h} - ${x2} - ${this.reduceNumber(h + x2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(i + h), this.reduceNumber(x2 + x2), this.reduceNumber(i + h + x2 * 2)), 'Мужской род - 5 колено Целостная', `${this.reduceNumber(i + h)} - ${this.reduceNumber(x2 + x2)} - ${this.reduceNumber(i + h + x2 * 2)}`);
-      
-      // 6 колено
-      addProgram(this.createProgramKey(m, y2, this.reduceNumber(m + y2)), 'Мужской род - 6 колено Небо', `${m} - ${y2} - ${this.reduceNumber(m + y2)}`);
-      addProgram(this.createProgramKey(l, y2, this.reduceNumber(l + y2)), 'Мужской род - 6 колено Земля', `${l} - ${y2} - ${this.reduceNumber(l + y2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(y2 + y2), this.reduceNumber(m + l + y2 * 2)), 'Мужской род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(y2 + y2)} - ${this.reduceNumber(m + l + y2 * 2)}`);
-      
-      // 7 колено
-      addProgram(this.createProgramKey(d, w, this.reduceNumber(d + w)), 'Мужской род - 7 колено Небо', `${d} - ${w} - ${this.reduceNumber(d + w)}`);
-      addProgram(this.createProgramKey(c, w, this.reduceNumber(c + w)), 'Мужской род - 7 колено Земля', `${c} - ${w} - ${this.reduceNumber(c + w)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(d + c), this.reduceNumber(w + w), this.reduceNumber(d + c + w * 2)), 'Мужской род - 7 колено Целостная', `${this.reduceNumber(d + c)} - ${this.reduceNumber(w + w)} - ${this.reduceNumber(d + c + w * 2)}`);
+      if (!this.getUserLogin()) {
+        // 2 колено
+        addProgram(this.createProgramKey(k, v2, this.reduceNumber(k + v2)), 'Мужской род - 2 колено Небо', `${k} - ${v2} - ${this.reduceNumber(k + v2)}`);
+        addProgram(this.createProgramKey(j, v2, this.reduceNumber(j + v2)), 'Мужской род - 2 колено Земля', `${j} - ${v2} - ${this.reduceNumber(j + v2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(v2 + v2), this.reduceNumber(k + j + v2 * 2)), 'Мужской род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(v2 + v2)} - ${this.reduceNumber(k + j + v2 * 2)}`);
+        
+        // 3 колено
+        addProgram(this.createProgramKey(g, u2, this.reduceNumber(g + u2)), 'Мужской род - 3 колено Небо', `${g} - ${u2} - ${this.reduceNumber(g + u2)}`);
+        addProgram(this.createProgramKey(f, u2, this.reduceNumber(f + u2)), 'Мужской род - 3 колено Земля', `${f} - ${u2} - ${this.reduceNumber(f + u2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(u2 + u2), this.reduceNumber(g + f + u2 * 2)), 'Мужской род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(u2 + u2)} - ${this.reduceNumber(g + f + u2 * 2)}`);
+        
+        // 4 колено
+        addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
+        addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(e + e), this.reduceNumber(z + z), this.reduceNumber(e + e + z * 2)), 'Мужской род - 4 колено Целостная', `${this.reduceNumber(e + e)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + e + z * 2)}`);
+        
+        // 5 колено
+        addProgram(this.createProgramKey(i, x2, this.reduceNumber(i + x2)), 'Мужской род - 5 колено Небо', `${i} - ${x2} - ${this.reduceNumber(i + x2)}`);
+        addProgram(this.createProgramKey(h, x2, this.reduceNumber(h + x2)), 'Мужской род - 5 колено Земля', `${h} - ${x2} - ${this.reduceNumber(h + x2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(i + h), this.reduceNumber(x2 + x2), this.reduceNumber(i + h + x2 * 2)), 'Мужской род - 5 колено Целостная', `${this.reduceNumber(i + h)} - ${this.reduceNumber(x2 + x2)} - ${this.reduceNumber(i + h + x2 * 2)}`);
+        
+        // 6 колено
+        addProgram(this.createProgramKey(m, y2, this.reduceNumber(m + y2)), 'Мужской род - 6 колено Небо', `${m} - ${y2} - ${this.reduceNumber(m + y2)}`);
+        addProgram(this.createProgramKey(l, y2, this.reduceNumber(l + y2)), 'Мужской род - 6 колено Земля', `${l} - ${y2} - ${this.reduceNumber(l + y2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(y2 + y2), this.reduceNumber(m + l + y2 * 2)), 'Мужской род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(y2 + y2)} - ${this.reduceNumber(m + l + y2 * 2)}`);
+        
+        // 7 колено
+        addProgram(this.createProgramKey(d, w, this.reduceNumber(d + w)), 'Мужской род - 7 колено Небо', `${d} - ${w} - ${this.reduceNumber(d + w)}`);
+        addProgram(this.createProgramKey(c, w, this.reduceNumber(c + w)), 'Мужской род - 7 колено Земля', `${c} - ${w} - ${this.reduceNumber(c + w)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(d + c), this.reduceNumber(w + w), this.reduceNumber(d + c + w * 2)), 'Мужской род - 7 колено Целостная', `${this.reduceNumber(d + c)} - ${this.reduceNumber(w + w)} - ${this.reduceNumber(d + c + w * 2)}`);
+      }
     }
 
     // Расчет программ по Женскому роду
@@ -321,77 +652,68 @@ class MatrixCalculator extends React.Component {
       addProgram(this.createProgramKey(b, n, this.reduceNumber(b + n)), 'Женский род - 1 колено Небо', `${b} - ${n} - ${this.reduceNumber(b + n)}`);
       addProgram(this.createProgramKey(a, q, this.reduceNumber(a + q)), 'Женский род - 1 колено Земля', `${a} - ${q} - ${this.reduceNumber(a + q)}`);
       addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(n + q), this.reduceNumber(b + n + a + q)), 'Женский род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(n + q)} - ${this.reduceNumber(b + n + a + q)}`);
-      
-      // 2 колено
-      addProgram(this.createProgramKey(k, p2, this.reduceNumber(k + p2)), 'Женский род - 2 колено Небо', `${k} - ${p2} - ${this.reduceNumber(k + p2)}`);
-      addProgram(this.createProgramKey(j, s2, this.reduceNumber(j + s2)), 'Женский род - 2 колено Земля', `${j} - ${s2} - ${this.reduceNumber(j + s2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(p2 + s2), this.reduceNumber(k + j + p2 + s2)), 'Женский род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(p2 + s2)} - ${this.reduceNumber(k + j + p2 + s2)}`);
-      
-      // 3 колено
-      addProgram(this.createProgramKey(g, o2, this.reduceNumber(g + o2)), 'Женский род - 3 колено Небо', `${g} - ${o2} - ${this.reduceNumber(g + o2)}`);
-      addProgram(this.createProgramKey(f, r2, this.reduceNumber(f + r2)), 'Женский род - 3 колено Земля', `${f} - ${r2} - ${this.reduceNumber(f + r2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(o2 + r2), this.reduceNumber(g + f + o2 + r2)), 'Женский род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(o2 + r2)} - ${this.reduceNumber(g + f + o2 + r2)}`);
-      
-      // 4 колено
-      addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-      addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(e + z), this.reduceNumber(z + z), this.reduceNumber(e + z + e + z)), 'Женский род - 4 колено Целостная', `${this.reduceNumber(e + z)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + z + e + z)}`);
-      
-      // 5 колено
-      addProgram(this.createProgramKey(d, q, this.reduceNumber(d + q)), 'Женский род - 5 колено Небо', `${d} - ${q} - ${this.reduceNumber(d + q)}`);
-      addProgram(this.createProgramKey(h, o2, this.reduceNumber(h + o2)), 'Женский род - 5 колено Земля', `${h} - ${o2} - ${this.reduceNumber(h + o2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(d + h), this.reduceNumber(q + o2), this.reduceNumber(d + h + q + o2)), 'Женский род - 5 колено Целостная', `${this.reduceNumber(d + h)} - ${this.reduceNumber(q + o2)} - ${this.reduceNumber(d + h + q + o2)}`);
-      
-      // 6 колено
-      addProgram(this.createProgramKey(m, s2, this.reduceNumber(m + s2)), 'Женский род - 6 колено Небо', `${m} - ${s2} - ${this.reduceNumber(m + s2)}`);
-      addProgram(this.createProgramKey(l, p2, this.reduceNumber(l + p2)), 'Женский род - 6 колено Земля', `${l} - ${p2} - ${this.reduceNumber(l + p2)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(s2 + p2), this.reduceNumber(m + l + s2 + p2)), 'Женский род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(s2 + p2)} - ${this.reduceNumber(m + l + s2 + p2)}`);
-      
-      // 7 колено
-      addProgram(this.createProgramKey(i, r2, this.reduceNumber(i + r2)), 'Женский род - 7 колено Небо', `${i} - ${r2} - ${this.reduceNumber(i + r2)}`);
-      addProgram(this.createProgramKey(c, n, this.reduceNumber(c + n)), 'Женский род - 7 колено Земля', `${c} - ${n} - ${this.reduceNumber(c + n)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(i + c), this.reduceNumber(r2 + n), this.reduceNumber(i + c + r2 + n)), 'Женский род - 7 колено Целостная', `${this.reduceNumber(i + c)} - ${this.reduceNumber(r2 + n)} - ${this.reduceNumber(i + c + r2 + n)}`);
+      if (!this.getUserLogin()) {
+        // 2 колено
+        addProgram(this.createProgramKey(k, p2, this.reduceNumber(k + p2)), 'Женский род - 2 колено Небо', `${k} - ${p2} - ${this.reduceNumber(k + p2)}`);
+        addProgram(this.createProgramKey(j, s2, this.reduceNumber(j + s2)), 'Женский род - 2 колено Земля', `${j} - ${s2} - ${this.reduceNumber(j + s2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(p2 + s2), this.reduceNumber(k + j + p2 + s2)), 'Женский род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(p2 + s2)} - ${this.reduceNumber(k + j + p2 + s2)}`);
+        
+        // 3 колено
+        addProgram(this.createProgramKey(g, o2, this.reduceNumber(g + o2)), 'Женский род - 3 колено Небо', `${g} - ${o2} - ${this.reduceNumber(g + o2)}`);
+        addProgram(this.createProgramKey(f, r2, this.reduceNumber(f + r2)), 'Женский род - 3 колено Земля', `${f} - ${r2} - ${this.reduceNumber(f + r2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(o2 + r2), this.reduceNumber(g + f + o2 + r2)), 'Женский род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(o2 + r2)} - ${this.reduceNumber(g + f + o2 + r2)}`);
+        
+        // 4 колено
+        addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
+        addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(e + z), this.reduceNumber(z + z), this.reduceNumber(e + z + e + z)), 'Женский род - 4 колено Целостная', `${this.reduceNumber(e + z)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + z + e + z)}`);
+        
+        // 5 колено
+        addProgram(this.createProgramKey(d, q, this.reduceNumber(d + q)), 'Женский род - 5 колено Небо', `${d} - ${q} - ${this.reduceNumber(d + q)}`);
+        addProgram(this.createProgramKey(h, o2, this.reduceNumber(h + o2)), 'Женский род - 5 колено Земля', `${h} - ${o2} - ${this.reduceNumber(h + o2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(d + h), this.reduceNumber(q + o2), this.reduceNumber(d + h + q + o2)), 'Женский род - 5 колено Целостная', `${this.reduceNumber(d + h)} - ${this.reduceNumber(q + o2)} - ${this.reduceNumber(d + h + q + o2)}`);
+        
+        // 6 колено
+        addProgram(this.createProgramKey(m, s2, this.reduceNumber(m + s2)), 'Женский род - 6 колено Небо', `${m} - ${s2} - ${this.reduceNumber(m + s2)}`);
+        addProgram(this.createProgramKey(l, p2, this.reduceNumber(l + p2)), 'Женский род - 6 колено Земля', `${l} - ${p2} - ${this.reduceNumber(l + p2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(s2 + p2), this.reduceNumber(m + l + s2 + p2)), 'Женский род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(s2 + p2)} - ${this.reduceNumber(m + l + s2 + p2)}`);
+        
+        // 7 колено
+        addProgram(this.createProgramKey(i, r2, this.reduceNumber(i + r2)), 'Женский род - 7 колено Небо', `${i} - ${r2} - ${this.reduceNumber(i + r2)}`);
+        addProgram(this.createProgramKey(c, n, this.reduceNumber(c + n)), 'Женский род - 7 колено Земля', `${c} - ${n} - ${this.reduceNumber(c + n)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(i + c), this.reduceNumber(r2 + n), this.reduceNumber(i + c + r2 + n)), 'Женский род - 7 колено Целостная', `${this.reduceNumber(i + c)} - ${this.reduceNumber(r2 + n)} - ${this.reduceNumber(i + c + r2 + n)}`);
+      }
     }
 
     // Прочие источники программ
     // Личный квадрат
     addProgram(this.createProgramKey(a, j, f), 'Личный квадрат', `${a} - ${j} - ${f}`);
-    addProgram(this.createProgramKey(f, j, a), 'Личный квадрат', `${f} - ${j} - ${a}`);
     addProgram(this.createProgramKey(b, k, g), 'Личный квадрат', `${b} - ${k} - ${g}`);
-    addProgram(this.createProgramKey(g, k, b), 'Личный квадрат', `${g} - ${k} - ${b}`);
     addProgram(this.createProgramKey(c, l, h), 'Личный квадрат', `${c} - ${l} - ${h}`);
-    addProgram(this.createProgramKey(h, l, c), 'Личный квадрат', `${h} - ${l} - ${c}`);
     addProgram(this.createProgramKey(d, m, i), 'Личный квадрат', `${d} - ${m} - ${i}`);
-    addProgram(this.createProgramKey(i, m, d), 'Личный квадрат', `${i} - ${m} - ${d}`);
 
     // Родовой квадрат
     addProgram(this.createProgramKey(t, v, u), 'Родовой квадрат', `${t} - ${v} - ${u}`);
-    addProgram(this.createProgramKey(u, v, t), 'Родовой квадрат', `${u} - ${v} - ${t}`);
     addProgram(this.createProgramKey(n, p, o), 'Родовой квадрат', `${n} - ${p} - ${o}`);
-    addProgram(this.createProgramKey(o, p, n), 'Родовой квадрат', `${o} - ${p} - ${n}`);
     addProgram(this.createProgramKey(w, y, x), 'Родовой квадрат', `${w} - ${y} - ${x}`);
-    addProgram(this.createProgramKey(x, y, w), 'Родовой квадрат', `${x} - ${y} - ${w}`);
     addProgram(this.createProgramKey(q, s, r), 'Родовой квадрат', `${q} - ${s} - ${r}`);
-    addProgram(this.createProgramKey(r, s, q), 'Родовой квадрат', `${r} - ${s} - ${q}`);
 
     // Таблица чакр
     addProgram(this.createProgramKey(b, a, this.reduceNumber(b + a)), 'Таблица чакр', `${b} - ${a} - ${this.reduceNumber(b + a)}`);
-    addProgram(this.createProgramKey(a, b, this.reduceNumber(a + b)), 'Таблица чакр', `${a} - ${b} - ${this.reduceNumber(a + b)}`);
     addProgram(this.createProgramKey(k, j, this.reduceNumber(k + j)), 'Таблица чакр', `${k} - ${j} - ${this.reduceNumber(k + j)}`);
-    addProgram(this.createProgramKey(j, k, this.reduceNumber(j + k)), 'Таблица чакр', `${j} - ${k} - ${this.reduceNumber(j + k)}`);
     addProgram(this.createProgramKey(g, f, this.reduceNumber(g + f)), 'Таблица чакр', `${g} - ${f} - ${this.reduceNumber(g + f)}`);
-    addProgram(this.createProgramKey(f, g, this.reduceNumber(f + g)), 'Таблица чакр', `${f} - ${g} - ${this.reduceNumber(f + g)}`);
     addProgram(this.createProgramKey(n, q, this.reduceNumber(n + q)), 'Таблица чакр', `${n} - ${q} - ${this.reduceNumber(n + q)}`);
-    addProgram(this.createProgramKey(q, n, this.reduceNumber(q + n)), 'Таблица чакр', `${q} - ${n} - ${this.reduceNumber(q + n)}`);
     addProgram(this.createProgramKey(t, w, this.reduceNumber(t + w)), 'Таблица чакр', `${t} - ${w} - ${this.reduceNumber(t + w)}`);
-    addProgram(this.createProgramKey(w, t, this.reduceNumber(w + t)), 'Таблица чакр', `${w} - ${t} - ${this.reduceNumber(w + t)}`);
     addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Таблица чакр', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-    addProgram(this.createProgramKey(i, h, this.reduceNumber(i + h)), 'Таблица чакр', `${i} - ${h} - ${this.reduceNumber(i + h)}`);
     addProgram(this.createProgramKey(h, i, this.reduceNumber(h + i)), 'Таблица чакр', `${h} - ${i} - ${this.reduceNumber(h + i)}`);
-    addProgram(this.createProgramKey(m, l, this.reduceNumber(m + l)), 'Таблица чакр', `${m} - ${l} - ${this.reduceNumber(m + l)}`);
     addProgram(this.createProgramKey(l, m, this.reduceNumber(l + m)), 'Таблица чакр', `${l} - ${m} - ${this.reduceNumber(l + m)}`);
-    addProgram(this.createProgramKey(d, c, this.reduceNumber(d + c)), 'Таблица чакр', `${d} - ${c} - ${this.reduceNumber(d + c)}`);
     addProgram(this.createProgramKey(c, d, this.reduceNumber(c + d)), 'Таблица чакр', `${c} - ${d} - ${this.reduceNumber(c + d)}`);
+
+    //Таблица предназаначений
+    addProgram(this.createProgramKey(this.reduceNumber(b + d), this.reduceNumber(a + c), this.reduceNumber(b + d + a + c)), 'Таблица предназаначений', `${this.reduceNumber(b + d)} - ${this.reduceNumber(a + c)} - ${this.reduceNumber(b + d + a + c)}`);
+    addProgram(this.createProgramKey(this.reduceNumber(t + w), this.reduceNumber(n + q), this.reduceNumber(t + w + n + q)), 'Таблица предназаначений', `${this.reduceNumber(t + w)} - ${this.reduceNumber(n + q)} - ${this.reduceNumber(t + w + n + q)}`);
+    addProgram(this.createProgramKey(this.reduceNumber(b + d + a + c), this.reduceNumber(t + w + n + q), this.reduceNumber(b + d + a + c + t + w + n + q)), 'Таблица предназаначений', `${this.reduceNumber(b + d + a + c)} - ${this.reduceNumber(t + w + n + q)} - ${this.reduceNumber(b + d + a + c + t + w + n + q)}`);
+    addProgram(this.createProgramKey(this.reduceNumber(b + d + a + c + t + w + n + q), this.reduceNumber(t + w + n + q), this.reduceNumber(this.reduceNumber(b + d + a + c + t + w + n + q) + this.reduceNumber(t + w + n + q))), 'Таблица предназаначений', `${this.reduceNumber(b + d + a + c + t + w + n + q)} - ${this.reduceNumber(t + w + n + q)} - ${this.reduceNumber(this.reduceNumber(b + d + a + c + t + w + n + q) + this.reduceNumber(t + w + n + q))}`);
 
     // Двухзначные программы
     addProgram(this.createProgramKey(7, 19), 'Достаток', `${7} - ${19}`);
@@ -402,74 +724,107 @@ class MatrixCalculator extends React.Component {
   }
 
   // Функция расчета благой кармы и точек роста
-  calculateKarma(values, originalDay, originalYear) {
+  calculateKarma(values, originalDay, originalYear, originalMonth) {
     const { a, b, c } = values;
     
     // Определяем a2 и c2 по специальным правилам
-    const a2 = (originalDay >= 23 && originalDay <= 31) ? a - 22 : null;
+    const a2 = (originalDay >= 23 && originalDay <= 31) ? originalDay - 22 : null;
     const originalYearSum = originalYear.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-    const c2 = originalYearSum > 22 ? c - 22 : null;
-    
+    const originalDaySum = originalDay.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+    const originalMonthSum = originalMonth.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+    const c2 = originalYearSum > 22 ? originalYearSum - 22 : null;
+    console.log(originalYearSum, originalDaySum, originalMonthSum)
     // Благая карма
-    const goodKarma = {
-      karma1: {
-        col1: '36 - ' + (a + b + c).toString(),
-        col2: this.reduceNumber(a + b),
-        col3: this.reduceNumber(a + c),
-        col4: this.reduceNumber(a * 2 + b + c),
-        col5: this.reduceNumber(b + c)
-      },
-      karma2: a2 ? {
-        col1: '46 - ' + (a2 + b + c).toString(),
-        col2: this.reduceNumber(a2 + b),
-        col3: this.reduceNumber(a2 + c),
-        col4: this.reduceNumber(a2 * 2 + b + c),
-        col5: this.reduceNumber(b + c)
-      } : null,
-      karma3: c2 ? {
-        col1: '56 - ' + (a + b + c2).toString(),
-        col2: this.reduceNumber(a + b),
-        col3: this.reduceNumber(a + c2),
-        col4: this.reduceNumber(a * 2 + b + c2),
-        col5: this.reduceNumber(b + c2)
-      } : null,
-      karma4: (a2 && c2) ? {
-        col1: '66 - ' + (a2 + b + c2).toString(),
-        col2: this.reduceNumber(a2 + b),
-        col3: this.reduceNumber(a2 + c2),
-        col4: this.reduceNumber(a2 * 2 + b + c2),
-        col5: this.reduceNumber(b + c2)
-      } : null
-    };
+    let goodKarma = []
+
+    for (let col1 = 0; col1 < 2; col1++){
+      for (let col2 = 0; col2 < 2; col2++){
+        for (let col3 = 0; col3 < 2; col3++){
+          for (let col4 = 0; col4 < 2; col4++){
+            let col1_value = col1? 
+            this.reduceNumber(this.reduceNumber(originalDay) + originalMonth)
+            :
+            this.moduleNumber(this.moduleNumber(originalDay) + originalMonth)
+            
+            let col2_value = col2? 
+            this.reduceNumber(this.reduceNumber(originalDay) + this.reduceNumber(originalYearSum))
+            :
+            this.moduleNumber(this.moduleNumber(originalDay) + this.moduleNumber(originalYearSum))
+
+            goodKarma.push({
+              col1: col1_value,
+              col2: col2_value,
+              col3: col3? 
+              this.reduceNumber(col1_value + col2_value)
+              :
+              this.moduleNumber(col1_value + col2_value),
+              col4: col4? 
+              this.reduceNumber(originalMonth + this.reduceNumber(originalYearSum))
+              :
+              this.moduleNumber(originalMonth + this.moduleNumber(originalYearSum)),
+            })
+          }
+        }
+      }
+    }
+
+    goodKarma = goodKarma.reduce((acc, current) => {
+      const isDuplicate = acc.some(item => 
+        JSON.stringify(item) === JSON.stringify(current)
+      );
+      if (!isDuplicate) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+
+    console.log(goodKarma)
+    
     
     // Точки роста
-    const growthPoints = {
-      point1: {
-        col2: a - b,
-        col3: a - c,
-        col4: (a - b) - (a - c),
-        col5: b - c
-      },
-      point2: a2 ? {
-        col2: a2 - b,
-        col3: a2 - c,
-        col4: (a2 - b) - (a2 - c),
-        col5: b - c
-      } : null,
-      point3: c2 ? {
-        col2: a - b,
-        col3: a - c2,
-        col4: (a - b) - (a - c2),
-        col5: b - c2
-      } : null,
-      point4: (a2 && c2) ? {
-        col2: a2 - b,
-        col3: a2 - c2,
-        col4: (a2 - b) - (a2 - c2),
-        col5: b - c2
-      } : null
-    };
+    let  growthPoints = []
 
+    for (let col1 = 0; col1 < 2; col1++){
+      for (let col2 = 0; col2 < 2; col2++){
+        for (let col3 = 0; col3 < 2; col3++){
+          for (let col4 = 0; col4 < 2; col4++){
+            let col1_value = col1? 
+            Math.abs(originalMonth - this.reduceNumber(originalDay))
+            :
+            Math.abs(originalMonth - this.moduleNumber(originalDay))
+            
+            let col2_value = col2? 
+            Math.abs(this.reduceNumber(originalYearSum) - this.reduceNumber(originalDay))
+            :
+            Math.abs(this.moduleNumber(originalYearSum) - this.moduleNumber(originalDay))
+
+            growthPoints.push({
+              col1: col1_value,
+              col2: col2_value,
+              col3: col3? 
+              this.reduceNumber(Math.abs(col1_value - col2_value))
+              :
+              this.moduleNumber(Math.abs(col1_value - col2_value)),
+              col4: col4? 
+              this.reduceNumber(Math.abs(originalMonth - this.reduceNumber(originalYearSum)))
+              :
+              this.moduleNumber(Math.abs(originalMonth - this.moduleNumber(originalYearSum)))
+            })
+          }
+        }
+      }
+    }
+    console.log(growthPoints)
+    growthPoints = growthPoints.reduce((acc, current) => {
+      const isDuplicate = acc.some(item => 
+        JSON.stringify(item) === JSON.stringify(current)
+      );
+      if (!isDuplicate) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+    
     return {
       goodKarma,
       growthPoints,
@@ -483,6 +838,8 @@ class MatrixCalculator extends React.Component {
     if (!this.validateForm()) {
       return;
     }
+
+    this.saveDataToURL();
 
     const { day, month, year, name, surname, patronymic, gender, fatherSurname, motherMaidenName } = this.state.formData;
     
@@ -498,9 +855,10 @@ class MatrixCalculator extends React.Component {
     }
 
     // Сохраняем оригинальные значения для расчета кармы
+    
     const originalDay = parseInt(day);
     const originalYear = parseInt(year);
-    
+    const originalMonth = parseInt(month)
     // Основные переменные
     const a = this.reduceNumber(parseInt(day));
     const b = this.reduceNumber(parseInt(month));
@@ -525,13 +883,15 @@ class MatrixCalculator extends React.Component {
     const r = this.reduceNumber(q + e);
     const s = this.reduceNumber(q + r);
     
-    const t = this.calculateLetterValue(surname);
+    const t = gender === 'male' ? 
+        this.calculateLetterValue(fatherSurname) 
+        : this.calculateLetterValue(surname);
     const u = this.reduceNumber(t + e);
     const v = this.reduceNumber(t + u);
     
     const w = gender === 'male' 
-      ? this.calculateLetterValue(fatherSurname)
-      : this.calculateLetterValue(patronymic);
+      ? this.calculateLetterValue(patronymic)
+      : this.calculateLetterValue(fatherSurname);
     
     const x = this.reduceNumber(w + e);
     const y = this.reduceNumber(w + x);
@@ -546,13 +906,13 @@ class MatrixCalculator extends React.Component {
     const r2 = this.reduceNumber(q + z);
     const s2 = this.reduceNumber(q + r2);
 
-    const a2 = (originalDay >= 23 && originalDay <= 31) ? a - 22 : null;
     const originalYearSum = originalYear.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-    const c2 = originalYearSum > 22 ? c - 22 : null;
+    const originalDaySum = originalDay.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+    const originalMonthSum = originalMonth.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
 
     const calculatedValues = {
       a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z,
-      u2, v2, x2, y2, o2, p2, r2, s2, a2, c2
+      u2, v2, x2, y2, o2, p2, r2, s2, originalYearSum, originalDaySum, originalMonthSum
     };
 
     // Расчет чакр
@@ -580,22 +940,28 @@ class MatrixCalculator extends React.Component {
     // Расчет предназначений
     const purposes = {
       personal: {
-        sky: b,
-        earth: a,
-        purpose: this.reduceNumber(b + a)
+        sky: this.reduceNumber(b + d),
+        earth: this.reduceNumber(a + c),
+        purpose: this.reduceNumber(this.reduceNumber(b + d) + this.reduceNumber(a + c))
       },
       social: {
-        male: t,
-        female: n,
-        purpose: this.reduceNumber(t + n)
+        male: this.reduceNumber(n + q),
+        female: this.reduceNumber(t + w),
+        purpose: this.reduceNumber(this.reduceNumber(n + q) + this.reduceNumber(t + w))
       },
       spiritual: {
-        purpose: this.reduceNumber(b + d + a + c + n + q + t + w),
-        formula: `${b} + ${d} + ${a} + ${c} + ${n} + ${q} + ${t} + ${w}`
+        purpose: this.reduceNumber(this.reduceNumber(this.reduceNumber(b + d) + this.reduceNumber(a + c)) + this.reduceNumber(this.reduceNumber(n + q) + this.reduceNumber(t + w))),
+        formula: `((${b} + ${d}) + (${a} + ${c})) + ((${n} + ${q}) + (${t} + ${w}))`
       },
       planetary: {
-        purpose: this.reduceNumber(b + d + a + c + (n + q + t + w) * 2),
-        formula: `${b} + ${d} + ${a} + ${c} + (${n} + ${q} + ${t} + ${w}) * 2`
+        purpose: this.reduceNumber(
+            this.reduceNumber(this.reduceNumber(n+q) + this.reduceNumber(t+w)) +
+            this.reduceNumber(
+                this.reduceNumber(this.reduceNumber(b+d) + this.reduceNumber(a+c)) +
+                this.reduceNumber(this.reduceNumber(n+q) + this.reduceNumber(t+w))
+            )
+        ),
+        formula: `((${n} + ${q}) + (${t} + ${w})) + (((${b} + ${d}) + (${a} + ${c})) + ((${n} + ${q}) + (${t} + ${w})))`
       }
     };
 
@@ -603,7 +969,7 @@ class MatrixCalculator extends React.Component {
     const foundPrograms = this.calculatePrograms(calculatedValues);
     
     // Расчет благой кармы и точек роста
-    const karmaResults = this.calculateKarma(calculatedValues, originalDay, originalYear);
+    const karmaResults = this.calculateKarma(calculatedValues, originalDay, originalYear, originalMonth);
 
     this.setState({
       results: calculatedValues,
@@ -794,6 +1160,16 @@ class MatrixCalculator extends React.Component {
             }
           }, 'Посчитать'),
 
+          this.state.results && this.getUserLogin() && e('button', {
+            className: 'pdf-btn',
+            onClick: this.saveToPDF,
+          }, 'Сохранить PDF'),
+
+          this.state.results && this.getUserLogin() && e('button', {
+            className: 'pdf-btn',
+            onClick: this.saveCalculation,
+          }, 'Сохранить расчет'),
+
           // Блок ошибок
           hasErrors && e('div', {
             style: {
@@ -803,6 +1179,7 @@ class MatrixCalculator extends React.Component {
               padding: '12px',
               marginTop: '15px',
               color: '#721c24'
+              
             }
           },
             e('strong', null, 'Пожалуйста, исправьте ошибки в форме:'),
@@ -814,6 +1191,7 @@ class MatrixCalculator extends React.Component {
           )
         ),
 
+
         // Результаты
         results && e('div', { className: 'results-section' },
           e('h2', null, 'Результаты расчета:'),
@@ -824,50 +1202,1105 @@ class MatrixCalculator extends React.Component {
           )
         ),
 
-        // Найденные родовые программы
-        programs.length > 0 && e('div', { className: 'results-section' },
-          e('h2', null, 'Найденные родовые программы:'),
-          e('div', { style: { display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' } },
-            programs.map((program, index) =>
-              e('div', {
-                key: index,
-                style: {
-                  background: 'linear-gradient(135deg, #fff3cd, #ffeaa7)',
-                  padding: '15px',
-                  borderRadius: '10px',
-                  border: '1px solid #f39c12',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }
+        // Матрица судьбы
+        results && e('div', { className: 'results-section' },
+          e('h2', null, 'Матрица судьбы:'),
+          
+          e('div', { 
+            style: { 
+              textAlign: 'center', 
+              marginTop: '20px',
+              padding: '20px',
+              background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))',
+              borderRadius: '15px',
+              border: '1px solid #a06eb6',
+              overflowX: 'auto'
+            } 
+          },
+          e('img', { 
+            src: 'https://194.146.242.64/images/dollar.svg',
+            height: '40',
+            style: { 
+              marginBottom: '-40px',
+              position: 'relative',
+              top: '410px',
+              right: '-150px'
+            }
+          }),
+
+          e('svg', {
+            width: '100%',
+            height: 'auto',
+            viewBox: '0 0 2527 2360',
+            style: { maxWidth: '1200px', minWidth: '800px' }
+            },
+            e('defs', null,
+              e('linearGradient', { 
+                id: 'dollarGradient', 
+                x1: '0%', 
+                y1: '0%', 
+                x2: '100%', 
+                y2: '100%',
+                gradientUnits: 'userSpaceOnUse'
+                },
+                e('stop', { offset: '0%', stopColor: '#FFD700' }),
+                e('stop', { offset: '50%', stopColor: '#FFA500' }),
+                e('stop', { offset: '100%', stopColor: '#FF8C00' })
+              ),
+              e('radialGradient', {
+                  id: 'heartGradient',
+                  cx: '0',
+                  cy: '0', 
+                  r: '1',
+                  gradientUnits: 'userSpaceOnUse',
+                  gradientTransform: 'translate(74 63) rotate(135.001) scale(67.8807 71.0167)'
+                },
+                e('stop', { stopColor: '#A21236' }),
+                e('stop', { offset: '1', stopColor: '#DA3A62' })
+              ),
+              e('linearGradient', { 
+                id: 'maleGradient', 
+                x1: '0', 
+                y1: '0', 
+                x2: '500', 
+                y2: '500', 
+                gradientUnits: 'userSpaceOnUse' 
               },
-                e('div', {
-                  style: {
-                    fontWeight: 'bold',
-                    fontSize: '1.1rem',
-                    color: '#d35400',
-                    marginBottom: '5px'
-                  }
-                }, `№${program.id}. ${program.name}`),
-                e('div', {
-                  style: {
-                    fontSize: '0.9rem',
-                    color: '#7f8c8d',
-                    marginBottom: '3px'
-                  }
-                }, `Источник: ${program.source}`),
-                e('div', {
-                  style: {
-                    fontSize: '0.9rem',
-                    color: '#2c3e50'
-                  }
-                }, `Код: ${program.calculation}`)
+                e('stop', { stopColor: 'white' }),
+                e('stop', { offset: '0.172115', stopColor: '#DB9B01' })
+              ), 
+            ),
+
+            e('clipPath', { id: 'maleClipPath' },
+              e('path', { 
+                d: 'M124 40.2025C124 44.6208 127.582 48.2025 132 48.2025C136.418 48.2025 140 44.6208 140 40.2025H132H124ZM132 8H140C140 3.58172 136.418 0 132 0V8ZM100.686 0C96.2675 0 92.6857 3.58172 92.6857 8C92.6857 12.4183 96.2675 16 100.686 16V8V0ZM22.2672 122.328L28.0026 116.751L28.0026 116.751L22.2672 122.328ZM91.1551 122.328L85.4198 116.751L85.4197 116.751L91.1551 122.328ZM91.1551 51.4856L96.8905 45.9084L96.8904 45.9084L91.1551 51.4856ZM22.2672 51.4856L16.5318 45.9084L16.5317 45.9085L22.2672 51.4856ZM84.681 45.1864C81.6008 48.354 81.6716 53.4188 84.8392 56.499C88.0068 59.5792 93.0716 59.5083 96.1518 56.3408L90.4164 50.7636L84.681 45.1864ZM130.777 20.7335C133.857 17.5659 133.786 12.5011 130.618 9.42087C127.451 6.34068 122.386 6.41153 119.306 9.57911L125.041 15.1563L130.777 20.7335ZM132 40.2025H140V8H132H124V40.2025H132ZM132 8V0H100.686V8V16H132V8ZM22.2672 122.328L16.5317 127.905C38.6958 150.698 74.7262 150.698 96.8905 127.905L91.1551 122.328L85.4197 116.751C69.5379 133.083 43.884 133.083 28.0026 116.751L22.2672 122.328ZM91.1551 122.328L96.8904 127.905C107.934 116.548 113.422 101.692 113.422 86.9068H105.422H97.4222C97.4222 97.7615 93.3989 108.545 85.4198 116.751L91.1551 122.328ZM105.422 86.9068H113.422C113.422 72.1216 107.934 57.2655 96.8905 45.9084L91.1551 51.4856L85.4197 57.0628C93.399 65.2685 97.4222 76.0521 97.4222 86.9068H105.422ZM91.1551 51.4856L96.8904 45.9084C74.7261 23.1157 38.6958 23.1156 16.5318 45.9084L22.2672 51.4856L28.0026 57.0628C43.884 40.7309 69.5379 40.7308 85.4197 57.0629L91.1551 51.4856ZM22.2672 51.4856L16.5317 45.9085C-5.51055 68.5763 -5.51062 105.238 16.5318 127.905L22.2672 122.328L28.0026 116.751C11.9992 100.293 11.9991 73.5205 28.0026 57.0628L22.2672 51.4856ZM90.4164 50.7636L96.1518 56.3408L130.777 20.7335L125.041 15.1563L119.306 9.57911L84.681 45.1864L90.4164 50.7636Z' 
+              })
+            ),
+
+            e('clipPath', { id: 'femaleClipPath' },
+              e('path', { 
+                d: 'M54.0798 8.74928L54.0704 0.749284L54.0703 0.749281L54.0798 8.74928ZM8.76095 54.0681L16.7609 54.0776L16.7609 54.0776L8.76095 54.0681ZM53.9725 99.2797L53.982 107.28L53.9725 99.2797ZM61.446 99.2905C61.4512 94.8722 57.8737 91.2862 53.4555 91.281C49.0372 91.2758 45.4512 94.8533 45.446 99.2715L53.446 99.281L61.446 99.2905ZM45.3771 157.469C45.3719 161.888 48.9494 165.474 53.3677 165.479C57.786 165.484 61.3719 161.907 61.3771 157.488L53.3771 157.479L45.3771 157.469ZM82.5243 133.112C86.9426 133.107 90.52 129.521 90.5148 125.103C90.5096 120.685 86.9237 117.107 82.5054 117.112L82.5148 125.112L82.5243 133.112ZM24.307 117.181C19.8888 117.186 16.3113 120.772 16.3165 125.191C16.3217 129.609 19.9077 133.186 24.326 133.181L24.3165 125.181L24.307 117.181ZM54.0798 8.74928L54.0703 0.749281C24.6603 0.784001 0.795674 24.6486 0.760953 54.0587L8.76095 54.0681L16.7609 54.0776C16.7852 33.4893 33.5009 16.7736 54.0892 16.7493L54.0798 8.74928ZM8.76095 54.0681L0.760954 54.0586C0.743481 68.766 6.69919 82.0917 16.324 91.7166L21.9809 86.0597L27.6377 80.4028C20.8993 73.6644 16.7487 64.3697 16.7609 54.0776L8.76095 54.0681ZM21.9809 86.0597L16.324 91.7166C25.9489 101.341 39.2746 107.297 53.982 107.28L53.9725 99.2797L53.9631 91.2797C43.6709 91.2919 34.3762 87.1413 27.6377 80.4028L21.9809 86.0597ZM53.9725 99.2797L53.982 107.28C83.392 107.245 107.257 83.3803 107.291 53.9703L99.2914 53.9609L91.2914 53.9514C91.267 74.5396 74.5513 91.2553 53.9631 91.2797L53.9725 99.2797ZM99.2914 53.9609L107.291 53.9703C107.326 24.5455 83.4953 0.714646 54.0704 0.749284L54.0798 8.74928L54.0892 16.7493C74.6629 16.7251 91.3157 33.378 91.2914 53.9514L99.2914 53.9609ZM53.446 99.281L45.446 99.2715L45.3771 157.469L53.3771 157.479L61.3771 157.488L61.446 99.2905L53.446 99.281ZM82.5148 125.112L82.5054 117.112L24.307 117.181L24.3165 125.181L24.326 133.181L82.5243 133.112L82.5148 125.112Z' 
+              })
+            ),
+            // Основные линии структуры
+            e('path', {
+              d: 'M2006 427V1909H518V427H2006Z',
+              stroke: '#416150',
+              strokeWidth: '10',
+              fill: 'none'
+              }
+            ),
+            
+            e('path', {
+              d: 'M508 417L2016 1919M2016 417L508 1919',
+              stroke: '#FFC000',
+              strokeWidth: '10'
+              }
+            ),
+            
+            e('rect', {
+              x: '1263.02',
+              y: '172.142',
+              width: '1408.41',
+              height: '1402.73',
+              transform: 'rotate(45 1263.02 172.142)',
+              stroke: '#416150',
+              strokeWidth: '10',
+              fill: 'none'
+              }
+            ),
+            
+            e('path', {
+              d: 'M1263.02 158L1266.53 1920.5M2273.06 1168.04L257 1164.02M1267.04 2174.06L1266.53 1920.5M2023.5 1168.04L1266.53 1920.5',
+              stroke: '#8F4F50',
+              strokeWidth: '10'
+              }
+            ),
+          
+            // Угловые точки (большие кружки)
+            // t - верхний левый
+            e('rect', {
+              x: '458',
+              y: '354',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#92D053'
+            }),
+            e('text', {
+              x: '523',
+              y: '442',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.t || ''),
+          
+            // w - нижний правый
+            e('rect', {
+              x: '1961',
+              y: '1856',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#92D053'
+            }),
+            e('text', {
+              x: '2026',
+              y: '1944',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.w || ''),
+          
+            // n - верхний правый
+            e('rect', {
+              x: '1961',
+              y: '354',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#2FCB9D'
+            }),
+            e('text', {
+              x: '2026',
+              y: '442',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.n || ''),
+          
+            // q - нижний левый
+            e('rect', {
+              x: '456',
+              y: '1855',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#2FCB9D'
+            }),
+            e('text', {
+              x: '521',
+              y: '1943',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.q || ''),
+          
+            // Основные точки крестообразной структуры
+            // a - левая
+            e('rect', {
+              x: '184',
+              y: '1121',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#B75D97'
+            }),
+            e('text', {
+              x: '249',
+              y: '1209',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.a || ''),
+          
+            // b - верхняя
+            e('rect', {
+              x: '1195',
+              y: '103',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#B75D97'
+            }),
+            e('text', {
+              x: '1260',
+              y: '191',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.b || ''),
+          
+            // e - центральная (зеленая)
+            e('rect', {
+              x: '1207',
+              y: '1018',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#66E770'
+            }),
+            e('text', {
+              x: '1272',
+              y: '1114',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.e || ''),
+          
+            // z - под центром
+            e('rect', {
+              x: '1207',
+              y: '1180',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#66E770'
+            }),
+            e('text', {
+              x: '1272',
+              y: '1276',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.z || ''),
+          
+            // c - правая
+            e('rect', {
+              x: '2230',
+              y: '1114',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#FF0000'
+            }),
+            e('text', {
+              x: '2295',
+              y: '1202',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.c || ''),
+          
+            // d - нижняя
+            e('rect', {
+              x: '1207',
+              y: '2110',
+              width: '130',
+              height: '130',
+              rx: '1000',
+              fill: '#FF0000'
+            }),
+            e('text', {
+              x: '1272',
+              y: '2198',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.d || ''),
+          
+            // Дополнительные точки (средние кружки)
+            // v
+            e('rect', {
+              x: '601',
+              y: '507',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '652',
+              y: '590',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.v || ''),
+          
+            // l
+            e('rect', {
+              x: '2086',
+              y: '1127',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#FBC203'
+            }),
+            e('text', {
+              x: '2141',
+              y: '1205',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.l || ''),
+          
+            // m
+            e('rect', {
+              x: '1210',
+              y: '1986',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#FBC203'
+            }),
+            e('text', {
+              x: '1265',
+              y: '2064',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.m || ''),
+          
+            // p
+            e('rect', {
+              x: '1842',
+              y: '517',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '1897',
+              y: '595',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.p || ''),
+          
+            // Малые точки (маленькие кружки)
+            // o
+            e('rect', {
+              x: '1721',
+              y: '626',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '1765',
+              y: '688',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.o || ''),
+          
+            // u
+            e('rect', {
+              x: '722',
+              y: '627',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '767',
+              y: '692',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.u || ''),
+          
+            // x
+            e('rect', {
+              x: '1721',
+              y: '1626',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '1764',
+              y: '1690',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.x || ''),
+          
+            // r
+            e('rect', {
+              x: '722',
+              y: '1628',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '768',
+              y: '1691',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.r || ''),
+          
+            // f
+            e('rect', {
+              x: '482',
+              y: '1136',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#8FAADC'
+            }),
+            e('text', {
+              x: '528',
+              y: '1198',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.f || ''),
+          
+            // g (верхняя)
+            e('rect', {
+              x: '1219',
+              y: '385',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#8FAADC'
+            }),
+            e('text', {
+              x: '1264',
+              y: '448',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.g || ''),
+          
+            // h (правая)
+            e('rect', {
+              x: '1963',
+              y: '1129',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#FFFE00'
+            }),
+            e('text', {
+              x: '2008',
+              y: '1192',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.h || ''),
+          
+            // i (нижняя)
+            e('rect', {
+              x: '1215',
+              y: '1859',
+              width: '90',
+              height: '90',
+              rx: '40',
+              fill: '#FFFE00'
+            }),
+            e('text', {
+              x: '1261',
+              y: '1922',
+              textAnchor: 'middle',
+              fill: 'black',
+              fontSize: '64',
+              fontWeight: 'bold'
+            }, results.i || ''),
+          
+            // y
+            e('rect', {
+              x: '1833',
+              y: '1734',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '1880',
+              y: '1812',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.y || ''),
+          
+            // s
+            e('rect', {
+              x: '601',
+              y: '1733',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#AFABAA'
+            }),
+            e('text', {
+              x: '651',
+              y: '1811',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.s || ''),
+          
+            // j
+            e('rect', {
+              x: '348',
+              y: '1126',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#0070C0'
+            }),
+            e('text', {
+              x: '398',
+              y: '1205',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.j || ''),
+          
+            // k
+            e('rect', {
+              x: '1212',
+              y: '259',
+              width: '105',
+              height: '105',
+              rx: '900',
+              fill: '#0070C0'
+            }),
+            e('text', {
+              x: '1261',
+              y: '337',
+              textAnchor: 'middle',
+              fill: 'white',
+              fontSize: '80',
+              fontWeight: 'bold'
+            }, results.k || ''),
+            //h+i
+            e('rect', {
+                x: '1580',
+                y: '1480',
+                width: '120',
+                height: '120',
+                rx: '60',
+                fill: '#AFABAA'
+              }),
+              e('text', {
+                x: '1640',
+                y: '1560',
+                textAnchor: 'middle',
+                fill: 'white',
+                fontSize: '80',
+                fontWeight: 'bold'
+              }, this.reduceNumber(results.h+results.i) || ''),
+
+              // (h+i)+i под сердцем
+              e('rect', {
+                  x: '1400',
+                  y: '1660',
+                  width: '120',
+                  height: '120',
+                  rx: '60',
+                  fill: '#AFABAA'
+                }),
+              e('text', {
+                x: '1460',
+                y: '1740',
+                textAnchor: 'middle',
+                fill: 'white',
+                fontSize: '80',
+                fontWeight: 'bold'
+              }, this.reduceNumber(this.reduceNumber(results.h+results.i) + results.i) || ''),
+              
+              // (h+i)+h под долларом
+              e('rect', {
+                x: '1760',
+                y: '1310',
+                width: '120',
+                height: '120',
+                rx: '60',
+                fill: '#AFABAA'
+              }),
+              e('text', {
+                x: '1820',
+                y: '1390',
+                textAnchor: 'middle',
+                fill: 'white',
+                fontSize: '80',
+                fontWeight: 'bold'
+              }, this.reduceNumber(this.reduceNumber(results.h+results.i) + results.h) || ''),
+              // Возрастные периоды
+              // 20 лет (верх)
+              e('text', {
+                  x: '1262',
+                  y: '50',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '20 лет'),
+                
+                // 40 лет (право)
+                e('text', {
+                  x: '2450',
+                  y: '1180',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '40 лет'),
+                
+                // 60 лет (низ)
+                e('text', {
+                  x: '1262',
+                  y: '2320',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '60 лет'),
+                
+                // 0 лет (лево)
+                e('text', {
+                  x: '80',
+                  y: '1180',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '0 лет'),
+                
+                // Дополнительные периоды по диагоналям
+                // Верхний левый угол
+                e('text', {
+                  x: '400',
+                  y: '300',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '48',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '10 лет '),
+                
+                // Верхний правый угол  
+                e('text', {
+                  x: '2100',
+                  y: '300',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '48',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '30 лет'),
+                
+                // Нижний правый угол
+                e('text', {
+                  x: '2100',
+                  y: '2000',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '48',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '50 лет'),
+                
+                // Нижний левый угол
+                e('text', {
+                  x: '400',
+                  y: '2000',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '48',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, '70 лет'),
+                e('text', {
+                  x: '1480',
+                  y: '580',
+                  textAnchor: 'middle',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter',
+                  transform: 'rotate(90 1357 518)'
+                }, 'Линия неба'),
+                
+                // Линия Земли (горизонтальная)
+                e('text', {
+                  x: '730',
+                  y: '1220',
+                  textAnchor: 'start',
+                  fill: 'rgb(127,83,142)',
+                  fontSize: '64',
+                  fontWeight: 'bold',
+                  fontFamily: 'Inter'
+                }, 'Линия земли'),
+
+                // Сердце
+                e('g', {
+                  transform: 'translate(1330, 1520) scale(1)'
+                  },
+                  e('path', {
+                    d: 'M40.425 0C18.0989 0 0 18.0777 0 40.3773C0 80.7547 47.775 117.461 73.5 126C99.225 117.461 147 80.7547 147 40.3773C147 18.0777 128.901 0 106.575 0C92.9029 0 80.8158 6.77936 73.5 17.156C66.1842 6.77936 54.0971 0 40.425 0Z',
+                    fill: 'url(#heartGradient)'
+                  })
+                ),
+                
+                // Мужчина
+                e('g', { transform: 'translate(1085, 830) scale(1)' },
+                  e('svg', { width: '140', height: '145', viewBox: '0 0 140 145', fill: 'none' },
+                    e('g', { clipPath: 'url(#maleClipPath)' },
+                      e('g', { transform: 'matrix(0.1035 0.065 -0.0834478 0.132875 107 72)' },
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1144.96', 
+                          height: '826.97', 
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1144.96', 
+                          height: '826.97', 
+                          transform: 'scale(1 -1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1144.96', 
+                          height: '826.97', 
+                          transform: 'scale(-1 1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1144.96', 
+                          height: '826.97', 
+                          transform: 'scale(-1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        })
+                      )
+                    ),
+                    e('path', { 
+                      d: 'M124 40.2025C124 44.6208 127.582 48.2025 132 48.2025C136.418 48.2025 140 44.6208 140 40.2025H132H124ZM132 8H140C140 3.58172 136.418 0 132 0V8ZM100.686 0C96.2675 0 92.6857 3.58172 92.6857 8C92.6857 12.4183 96.2675 16 100.686 16V8V0ZM22.2672 122.328L28.0026 116.751L28.0026 116.751L22.2672 122.328ZM91.1551 122.328L85.4198 116.751L85.4197 116.751L91.1551 122.328ZM91.1551 51.4856L96.8905 45.9084L96.8904 45.9084L91.1551 51.4856ZM22.2672 51.4856L16.5318 45.9084L16.5317 45.9085L22.2672 51.4856ZM84.681 45.1864C81.6008 48.354 81.6716 53.4188 84.8392 56.499C88.0068 59.5792 93.0716 59.5083 96.1518 56.3408L90.4164 50.7636L84.681 45.1864ZM130.777 20.7335C133.857 17.5659 133.786 12.5011 130.618 9.42087C127.451 6.34068 122.386 6.41153 119.306 9.57911L125.041 15.1563L130.777 20.7335ZM132 40.2025H140V8H132H124V40.2025H132ZM132 8V0H100.686V8V16H132V8ZM22.2672 122.328L16.5317 127.905C38.6958 150.698 74.7262 150.698 96.8905 127.905L91.1551 122.328L85.4197 116.751C69.5379 133.083 43.884 133.083 28.0026 116.751L22.2672 122.328ZM91.1551 122.328L96.8904 127.905C107.934 116.548 113.422 101.692 113.422 86.9068H105.422H97.4222C97.4222 97.7615 93.3989 108.545 85.4198 116.751L91.1551 122.328ZM105.422 86.9068H113.422C113.422 72.1216 107.934 57.2655 96.8905 45.9084L91.1551 51.4856L85.4197 57.0628C93.399 65.2685 97.4222 76.0521 97.4222 86.9068H105.422ZM91.1551 51.4856L96.8904 45.9084C74.7261 23.1157 38.6958 23.1156 16.5318 45.9084L22.2672 51.4856L28.0026 57.0628C43.884 40.7309 69.5379 40.7308 85.4197 57.0629L91.1551 51.4856ZM22.2672 51.4856L16.5317 45.9085C-5.51055 68.5763 -5.51062 105.238 16.5318 127.905L22.2672 122.328L28.0026 116.751C11.9992 100.293 11.9991 73.5205 28.0026 57.0628L22.2672 51.4856ZM90.4164 50.7636L96.1518 56.3408L130.777 20.7335L125.041 15.1563L119.306 9.57911L84.681 45.1864L90.4164 50.7636Z',
+                      fill: 'url(#maleGradient)'
+                    })
+                  )
+                ),
+
+                // Женщина
+                e('g', { transform: 'translate(1300, 830) scale(1)' },
+                  e('svg', { width: '108', height: '166', viewBox: '0 0 108 166', fill: 'none' },
+                    e('g', { clipPath: 'url(#femaleClipPath)' },
+                      e('g', { transform: 'matrix(0.0416886 0.0416886 -0.042051 0.042051 53.7395 73.7394)' },
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1271.39', 
+                          height: '1269.05', 
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1271.39', 
+                          height: '1269.05', 
+                          transform: 'scale(1 -1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1271.39', 
+                          height: '1269.05', 
+                          transform: 'scale(-1 1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        }),
+                        e('rect', { 
+                          x: '0', 
+                          y: '0', 
+                          width: '1271.39', 
+                          height: '1269.05', 
+                          transform: 'scale(-1)',
+                          fill: 'url(#maleGradient)',
+                          opacity: '1'
+                        })
+                      )
+                    ),
+                    e('path', { 
+                      d: 'M54.0798 8.74928L54.0704 0.749284L54.0703 0.749281L54.0798 8.74928ZM8.76095 54.0681L16.7609 54.0776L16.7609 54.0776L8.76095 54.0681ZM53.9725 99.2797L53.982 107.28L53.9725 99.2797ZM61.446 99.2905C61.4512 94.8722 57.8737 91.2862 53.4555 91.281C49.0372 91.2758 45.4512 94.8533 45.446 99.2715L53.446 99.281L61.446 99.2905ZM45.3771 157.469C45.3719 161.888 48.9494 165.474 53.3677 165.479C57.786 165.484 61.3719 161.907 61.3771 157.488L53.3771 157.479L45.3771 157.469ZM82.5243 133.112C86.9426 133.107 90.52 129.521 90.5148 125.103C90.5096 120.685 86.9237 117.107 82.5054 117.112L82.5148 125.112L82.5243 133.112ZM24.307 117.181C19.8888 117.186 16.3113 120.772 16.3165 125.191C16.3217 129.609 19.9077 133.186 24.326 133.181L24.3165 125.181L24.307 117.181ZM54.0798 8.74928L54.0703 0.749281C24.6603 0.784001 0.795674 24.6486 0.760953 54.0587L8.76095 54.0681L16.7609 54.0776C16.7852 33.4893 33.5009 16.7736 54.0892 16.7493L54.0798 8.74928ZM8.76095 54.0681L0.760954 54.0586C0.743481 68.766 6.69919 82.0917 16.324 91.7166L21.9809 86.0597L27.6377 80.4028C20.8993 73.6644 16.7487 64.3697 16.7609 54.0776L8.76095 54.0681ZM21.9809 86.0597L16.324 91.7166C25.9489 101.341 39.2746 107.297 53.982 107.28L53.9725 99.2797L53.9631 91.2797C43.6709 91.2919 34.3762 87.1413 27.6377 80.4028L21.9809 86.0597ZM53.9725 99.2797L53.982 107.28C83.392 107.245 107.257 83.3803 107.291 53.9703L99.2914 53.9609L91.2914 53.9514C91.267 74.5396 74.5513 91.2553 53.9631 91.2797L53.9725 99.2797ZM99.2914 53.9609L107.291 53.9703C107.326 24.5455 83.4953 0.714646 54.0704 0.749284L54.0798 8.74928L54.0892 16.7493C74.6629 16.7251 91.3157 33.378 91.2914 53.9514L99.2914 53.9609ZM53.446 99.281L45.446 99.2715L45.3771 157.469L53.3771 157.479L61.3771 157.488L61.446 99.2905L53.446 99.281ZM82.5148 125.112L82.5054 117.112L24.307 117.181L24.3165 125.181L24.326 133.181L82.5243 133.112L82.5148 125.112Z',
+                      fill: 'url(#maleGradient)'
+                    })
+                  )
+                ),
               )
+            )
+        ),
+
+        // Расчет предназначений
+        purposes && e('div', { className: 'results-section' },
+          e('h2', null, 'Расчет предназначений:'),
+          e('div', {
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '20px',
+              marginTop: '20px'
+            }
+          },
+          // Личное предназначение
+          e('div', {
+            style: {
+              background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))',
+              padding: '20px',
+              borderRadius: '15px',
+              border: '2px solid #a06eb6',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              textAlign: 'center'
+            }
+          },
+          e('h3', { style: { color: '#a06eb6', marginBottom: '15px', fontSize: '1.3rem' } }, 'Личное предназначение'),
+          e('p', { style: { color: '#a06eb6', marginBottom: '15px', fontStyle: 'italic' } }, 'Задачи перед самим собой'),
+          e('div', { style: { display: 'flex', justifyContent: 'space-around', marginBottom: '15px' } },
+            e('div', { style: { textAlign: 'center' } },
+              e('div', { style: { 
+                background: 'white', 
+                border: '3px solid #a06eb6', 
+                borderRadius: '50%', 
+                width: '60px', 
+                height: '60px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#a06eb6',
+                margin: '0 auto 8px'
+                }},
+                purposes.personal.sky),
+                e('div', { style: { fontSize: '0.9rem', color: '#a06eb6' } }, 'Небо')
+            ),
+            e('div', { style: { textAlign: 'center' } },
+              e('div', { style: { 
+                background: 'white', 
+                border: '3px solid #a06eb6', 
+                borderRadius: '50%', 
+                width: '60px', 
+                height: '60px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#a06eb6',
+                margin: '0 auto 8px'
+              }},purposes.personal.earth),
+              e('div', { style: { fontSize: '0.9rem', color: '#a06eb6' } }, 'Земля')
+            )
+          ),
+          e('div', {
+            style: {
+              background: '#a06eb6',
+              color: 'white',
+              borderRadius: '50%',
+              width: '80px',
+              height: '80px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              margin: '0 auto 10px',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+            }
+          }, purposes.personal.purpose),
+          // e('div', { style: { fontSize: '1rem', color: '#1b5e20', fontWeight: 'bold' } },
+          //   `${purposes.personal.sky} + ${purposes.personal.earth} = ${purposes.personal.purpose}`
+          // )
+        ),
+        // Социальное предназначение
+        e('div', {
+          style: {
+            background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))',
+            padding: '20px',
+            borderRadius: '15px',
+            border: '2px solid #a06eb6',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }
+        },
+          e('h3', { style: { color: '#a06eb6', marginBottom: '15px', fontSize: '1.3rem' } }, 'Социальное предназначение'),
+          e('p', { style: { color: '#a06eb6', marginBottom: '15px', fontStyle: 'italic' } }, 'Задачи перед родом и другими людьми'),
+          e('div', { style: { display: 'flex', justifyContent: 'space-around', marginBottom: '15px' } },
+            e('div', { style: { textAlign: 'center' } },
+              e('div', { style: { 
+                background: 'white', 
+                border: '3px solid #a06eb6', 
+                borderRadius: '50%', 
+                width: '60px', 
+                height: '60px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#a06eb6',
+                margin: '0 auto 8px'
+                }},
+                purposes.social.male),
+                e('div', { style: { fontSize: '0.9rem', color: '#a06eb6' } }, 'М')
+              ),
+              e('div', { style: { textAlign: 'center' } },
+                e('div', { style: { 
+                  background: 'white', 
+                  border: '3px solid #a06eb6', 
+                  borderRadius: '50%', 
+                  width: '60px', 
+                  height: '60px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  color: '#a06eb6',
+                  margin: '0 auto 8px'
+                }},
+                purposes.social.female),
+                e('div', { style: { fontSize: '0.9rem', color: '#a06eb6' } }, 'Ж')
+              )
+            ),
+            e('div', {
+              style: {
+                background: '#a06eb6',
+                color: 'white',
+                borderRadius: '50%',
+                width: '80px',
+                height: '80px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                margin: '0 auto 10px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+            }
+          }, purposes.social.purpose),
+          // e('div', { style: { fontSize: '1rem', color: '#a06eb6', fontWeight: 'bold' } },
+          //   `${purposes.social.male} + ${purposes.social.female} = ${purposes.social.purpose}`
+          // )
+        ),
+        // Духовное предназначение
+        e('div', {
+          style: {
+            background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))',
+              padding: '20px',
+              borderRadius: '15px',
+              border: '2px solid #a06eb6',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              textAlign: 'center'
+          }
+        },
+          e('h3', { style: { color: '#a06eb6', marginBottom: '15px', fontSize: '1.3rem' } }, 'Духовное предназначение'),
+          e('p', { style: { color: '#a06eb6', marginBottom: '15px', fontStyle: 'italic' } }, 'Задача Души'),
+          e('div', {
+            style: {
+              background: '#a06eb6',
+              color: 'white',
+              borderRadius: '50%',
+              width: '100px',
+              height: '100px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              margin: '0 auto 15px',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.2)'
+            }
+          }, purposes.spiritual.purpose),
+          // e('div', {
+          //   style: {
+          //     fontSize: '0.9rem',
+          //     color: '#880e4f',
+          //     fontWeight: 'bold',
+          //     backgroundColor: 'rgba(255,255,255,0.7)',
+          //     padding: '8px',
+          //     borderRadius: '8px',
+          //     border: '1px solid #e91e63'
+          //   }
+          // }, `${purposes.spiritual.formula} = ${purposes.spiritual.purpose}`)
+        ),
+
+        // Планетарное предназначение
+        e('div', {
+          style: {
+            background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))',
+            padding: '20px',
+            borderRadius: '15px',
+            border: '2px solid #a06eb6',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }},
+          e('h3', { style: { color: '#a06eb6', marginBottom: '15px', fontSize: '1.3rem' } }, 'Планетарное предназначение'),
+          e('p', { style: { color: '#a06eb6', marginBottom: '15px', fontStyle: 'italic' } }, 'Задача перед миром'),
+          e('div', {
+            style: {
+              background: '#a06eb6',
+              color: 'white',
+              borderRadius: '50%',
+              width: '100px',
+              height: '100px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              margin: '0 auto 15px',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.2)'
+            }}, purposes.planetary.purpose),
+            // e('div', {
+            //   style: {
+            //   fontSize: '0.8rem',
+            //   color: '#bf360c',
+            //   fontWeight: 'bold',
+            //   backgroundColor: 'rgba(255,255,255,0.7)',
+            //   padding: '8px',
+            //   borderRadius: '8px',
+            //   border: '1px solid #ff9800'
+            // }}, `${purposes.planetary.formula} = ${purposes.planetary.purpose}`)
             )
           )
         ),
 
         // Таблица чакр
         chakras && e('div', { className: 'results-section' },
-          e('h2', null, 'Таблица чакр:'),
+          e('h2', null, 'КАРТА ЗДОРОВЬЯ'),
           e('div', {
             style: {
               marginTop: '20px',
@@ -886,7 +2319,7 @@ class MatrixCalculator extends React.Component {
               }
             },
               e('thead', null,
-                e('tr', { style: { backgroundColor: 'rgb(127,83,142)', color: 'white' } },
+                e('tr', { style: { backgroundColor: 'rgb(224, 202, 231)' } },
                   e('th', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold' } }, 'Энергия'),
                   e('th', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold' } }, 'Физика'),
                   e('th', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold' } }, 'Эмоции'),
@@ -906,7 +2339,7 @@ class MatrixCalculator extends React.Component {
                     e('td', { style: { padding: '12px', textAlign: 'left', fontWeight: 'bold', fontSize: '1.1rem' } }, chakra.name)
                   );
                 }),
-                e('tr', { style: { backgroundColor: '#2c3e50', color: 'white', borderTop: '3px solid rgb(127,83,142)' } },
+                e('tr', { style: { background: 'rgb(224, 202, 231)', borderTop: '3px solid rgb(127,83,142)' } },
                   e('td', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2rem' } }, chakras.totals.energy),
                   e('td', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2rem' } }, chakras.totals.physics),
                   e('td', { style: { padding: '15px', textAlign: 'center', fontWeight: 'bold', fontSize: '1.2rem' } }, chakras.totals.emotions),
@@ -917,194 +2350,72 @@ class MatrixCalculator extends React.Component {
           )
         ),
 
-        // Предназначения
-        purposes && e('div', { className: 'results-section' },
-          e('h2', null, 'Расчет предназначений:'),
-          e('div', {
-            style: {
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '20px',
-              marginTop: '20px'
-            }
-          },
-            // Личное предназначение
-            e('div', {
-              style: {
-                background: 'linear-gradient(135deg, #e8f5e8, #c8e6c9)',
-                padding: '20px',
-                borderRadius: '15px',
-                border: '2px solid #4caf50',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                textAlign: 'center'
-              }
-            },
-              e('h3', { style: { color: '#2e7d32', marginBottom: '15px', fontSize: '1.3rem' } }, 'Личное предназначение'),
-              e('p', { style: { color: '#1b5e20', marginBottom: '15px', fontStyle: 'italic' } }, 'Задачи перед самим собой'),
-              e('div', {
-                style: {
-                  background: '#4caf50',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '80px',
-                  height: '80px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  margin: '0 auto 10px',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-                }
-              }, purposes.personal.purpose),
-              e('div', { style: { fontSize: '1rem', color: '#1b5e20', fontWeight: 'bold' } },
-                `${purposes.personal.sky} + ${purposes.personal.earth} = ${purposes.personal.purpose}`
+        
+
+        // Найденные родовые программы
+        programs.length > 0 && e('div', { className: 'results-section' },
+            e('h2', null, 'Кармические программы'),
+            e('div', { style: { display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' } },
+              programs.map((program, index) =>
+                e('div', {
+                  key: index,
+                  style: {
+                    background: 'linear-gradient(135deg, rgb(237, 224, 241),rgb(224, 202, 231))',
+                    padding: '15px',
+                    borderRadius: '10px',
+                    border: '1px solid rgb(204, 145, 224)',
+                    boxShadow: '0 2px 10px rgba(127,83,142, 0.3)',
+                  },
+                  className: 'scale-on-hover'
+                },
+                  e('div', {
+                    style: {
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      color: 'rgb(127,83,142)',
+                      marginBottom: '5px'
+                    }
+                  }, `${program.name}`),
+                  e('div', {
+                    style: {
+                      fontSize: '0.9rem',
+                      color: 'rgb(127,83,142)',
+                      marginBottom: '3px'
+                    }
+                  }, `Источник: ${program.source}`),
+                  e('div', {
+                    style: {
+                      fontSize: '0.9rem',
+                      color: '#2c3e50'
+                    }
+                  }, `Код: ${program.calculation}`)
+                )
               )
-            ),
-
-            // Социальное предназначение
-            e('div', {
-              style: {
-                background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
-                padding: '20px',
-                borderRadius: '15px',
-                border: '2px solid #2196f3',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                textAlign: 'center'
-              }
-            },
-              e('h3', { style: { color: '#1565c0', marginBottom: '15px', fontSize: '1.3rem' } }, 'Социальное предназначение'),
-              e('p', { style: { color: '#0d47a1', marginBottom: '15px', fontStyle: 'italic' } }, 'Задачи перед родом и другими людьми'),
-              e('div', {
-                style: {
-                  background: '#2196f3',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '80px',
-                  height: '80px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  margin: '0 auto 10px',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-                }
-              }, purposes.social.purpose),
-              e('div', { style: { fontSize: '1rem', color: '#0d47a1', fontWeight: 'bold' } },
-                `${purposes.social.male} + ${purposes.social.female} = ${purposes.social.purpose}`
-              )
-            ),
-
-            // Духовное предназначение
-            e('div', {
-              style: {
-                background: 'linear-gradient(135deg, #fce4ec, #f8bbd9)',
-                padding: '20px',
-                borderRadius: '15px',
-                border: '2px solid #e91e63',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                textAlign: 'center'
-              }
-            },
-              e('h3', { style: { color: '#ad1457', marginBottom: '15px', fontSize: '1.3rem' } }, 'Духовное предназначение'),
-              e('p', { style: { color: '#880e4f', marginBottom: '15px', fontStyle: 'italic' } }, 'Задача Души'),
-              e('div', {
-                style: {
-                  background: '#e91e63',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '100px',
-                  height: '100px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2.5rem',
-                  fontWeight: 'bold',
-                  margin: '0 auto 15px',
-                  boxShadow: '0 6px 12px rgba(0,0,0,0.2)'
-                }
-              }, purposes.spiritual.purpose),
-              e('div', {
-                style: {
-                  fontSize: '0.9rem',
-                  color: '#880e4f',
-                  fontWeight: 'bold',
-                  backgroundColor: 'rgba(255,255,255,0.7)',
-                  padding: '8px',
-                  borderRadius: '8px',
-                  border: '1px solid #e91e63'
-                }
-              }, `${purposes.spiritual.formula} = ${purposes.spiritual.purpose}`)
-            ),
-
-            // Планетарное предназначение
-            e('div', {
-              style: {
-                background: 'linear-gradient(135deg, #fff3e0, #ffcc80)',
-                padding: '20px',
-                borderRadius: '15px',
-                border: '2px solid #ff9800',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                textAlign: 'center'
-              }
-            },
-              e('h3', { style: { color: '#e65100', marginBottom: '15px', fontSize: '1.3rem' } }, 'Планетарное предназначение'),
-              e('p', { style: { color: '#bf360c', marginBottom: '15px', fontStyle: 'italic' } }, 'Задача перед миром'),
-              e('div', {
-                style: {
-                  background: '#ff9800',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '100px',
-                  height: '100px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '2.5rem',
-                  fontWeight: 'bold',
-                  margin: '0 auto 15px',
-                  boxShadow: '0 6px 12px rgba(0,0,0,0.2)'
-                }
-              }, purposes.planetary.purpose),
-              e('div', {
-                style: {
-                  fontSize: '0.8rem',
-                  color: '#bf360c',
-                  fontWeight: 'bold',
-                  backgroundColor: 'rgba(255,255,255,0.7)',
-                  padding: '8px',
-                  borderRadius: '8px',
-                  border: '1px solid #ff9800'
-                }
-              }, `${purposes.planetary.formula} = ${purposes.planetary.purpose}`)
             )
-          )
         ),
-
         // Расчет благой кармы и точек роста
-        karma && e('div', { className: 'results-section' },
-          e('h2', null, 'Расчет благой кармы и точек роста:'),
+        karma && this.getUserLogin() && e('div', { className: 'results-section' },
+          e('h2', null, 'Жизненные циклы'),
           
-          // Информация о специальных значениях
-          (karma.specialValues.a2 || karma.specialValues.c2) && e('div', {
-            style: {
-              backgroundColor: '#f0f8ff',
-              border: '2px solid #4682b4',
-              borderRadius: '10px',
-              padding: '15px',
-              marginTop: '15px',
-              marginBottom: '20px'
-            }
-          },
-            e('h4', { style: { color: '#2c3e50', marginBottom: '10px' } }, 'Специальные условия:'),
-            karma.specialValues.a2 && e('p', {
-              style: { color: 'rgb(127,83,142)', margin: '5px 0' }
-            }, `• a2 = ${karma.specialValues.a2} (день рождения ${karma.originalDay} ≥ 23)`),
-            karma.specialValues.c2 && e('p', {
-              style: { color: 'rgb(127,83,142)', margin: '5px 0' }
-            }, `• c2 = ${karma.specialValues.c2} (сумма цифр года ${karma.originalYearSum} больше 22)`)
-          ),
+          // // Информация о специальных значениях
+          // (karma.specialValues.a2 || karma.specialValues.c2) && e('div', {
+          //   style: {
+          //     backgroundColor: '#f0f8ff',
+          //     border: '2px solid #4682b4',
+          //     borderRadius: '10px',
+          //     padding: '15px',
+          //     marginTop: '15px',
+          //     marginBottom: '20px'
+          //   }
+          // },
+          //   e('h4', { style: { color: '#2c3e50', marginBottom: '10px' } }, 'Специальные условия:'),
+          //   karma.specialValues.a2 && e('p', {
+          //     style: { color: 'rgb(127,83,142)', margin: '5px 0' }
+          //   }, `• a2 = ${karma.specialValues.a2} (день рождения ${karma.originalDay} ≥ 23)`),
+          //   karma.specialValues.c2 && e('p', {
+          //     style: { color: 'rgb(127,83,142)', margin: '5px 0' }
+          //   }, `• c2 = ${karma.specialValues.c2} (сумма цифр года ${karma.originalYearSum} больше 22)`)
+          // ),
 
           e('div', {
             style: {
@@ -1126,96 +2437,156 @@ class MatrixCalculator extends React.Component {
             },
               e('thead', null,
                 e('tr', { style: { backgroundColor: 'rgb(127,83,142)', color: 'white' } },
-                  e('th', { style: { padding: '12px', textAlign: 'left', fontWeight: 'bold', minWidth: '150px' } }, 'Тип'),
-                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '100px' } }, results ? 36 - (results.a + results.b + results.c) : ''),
-                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '80px' } }, results ? 46 - (results.a + results.b + results.c) : ''),
-                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '80px' } }, results ? 56 - (results.a + results.b + results.c) : ''),
-                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '120px' } }, results ? (56 - (results.a + results.b + results.c)) + '+' : '')
+                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '150px' } }, 'Циклы'),
+                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '100px' } }, results ? 'до ' + (36 - this.reduceNumber(results.originalDaySum + results.originalMonthSum + results.originalYearSum)).toString() : ''),
+                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '80px' } }, results ? 46 - this.reduceNumber(results.originalDaySum + results.originalMonthSum + results.originalYearSum) : ''),
+                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '80px' } }, results ? 56 - this.reduceNumber(results.originalDaySum + results.originalMonthSum + results.originalYearSum) : ''),
+                  e('th', { style: { padding: '12px', textAlign: 'center', fontWeight: 'bold', minWidth: '120px' } }, results ? (56 - this.reduceNumber(results.originalDaySum + results.originalMonthSum + results.originalYearSum)).toString() + '+' : '')
                 )
               ),
               e('tbody', null,
                 // Благая карма 1
-                e('tr', { style: { backgroundColor: '#e8f5e8' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#2e7d32' } }, 'Благая карма 1'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma1.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma1.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma1.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma1.col5)
+                karma.goodKarma.map((value, index) => 
+                  e('tr', { style: { background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))' } },
+                    e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f538e' } }, 'Благая карма ' + (index + 1).toString()),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col1),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col2),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col3),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col4)
+                  )
                 ),
 
-                // Благая карма 2
-                karma.goodKarma.karma2 && e('tr', { style: { backgroundColor: '#e3f2fd' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#1565c0' } }, 'Благая карма 2'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma2.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma2.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma2.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma2.col5)
-                ),
-
-                // Благая карма 3
-                karma.goodKarma.karma3 && e('tr', { style: { backgroundColor: '#fce4ec' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#ad1457' } }, 'Благая карма 3'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma3.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma3.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma3.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma3.col5)
-                ),
-
-                // Благая карма 4
-                karma.goodKarma.karma4 && e('tr', { style: { backgroundColor: '#fff3e0' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#e65100' } }, 'Благая карма 4'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma4.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma4.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma4.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.goodKarma.karma4.col5)
-                ),
+                
 
                 // Разделитель
-                e('tr', { style: { backgroundColor: 'rgb(127,83,142)' } },
+                e('tr', { style: { backgroundColor: '#7f538e' } },
                   e('td', { colSpan: 6, style: { padding: '2px' } })
                 ),
 
-                // Точка роста 1
-                e('tr', { style: { backgroundColor: '#f5f5f5' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f8c8d' } }, 'Точка роста 1'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', color: '#7f8c8d' } }, karma.growthPoints.point1.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point1.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point1.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point1.col5)
-                ),
-
-                // Точка роста 2
-                karma.growthPoints.point2 && e('tr', { style: { backgroundColor: '#f0f8ff' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f8c8d' } }, 'Точка роста 2'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', color: '#7f8c8d' } }, karma.growthPoints.point2.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point2.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point2.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point2.col5)
-                ),
-
-                // Точка роста 3
-                karma.growthPoints.point3 && e('tr', { style: { backgroundColor: '#fef9e7' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f8c8d' } }, 'Точка роста 3'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', color: '#7f8c8d' } }, karma.growthPoints.point3.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point3.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point3.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point3.col5)
-                ),
-
-                // Точка роста 4
-                karma.growthPoints.point4 && e('tr', { style: { backgroundColor: '#f3e5f5' } },
-                  e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f8c8d' } }, 'Точка роста 4'),
-                  e('td', { style: { padding: '10px', textAlign: 'center', color: '#7f8c8d' } }, karma.growthPoints.point4.col2),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point4.col3),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point4.col4),
-                  e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, karma.growthPoints.point4.col5)
+                // Точка роста
+                karma.growthPoints.map((value, index)=>
+                  e('tr', { style: { background: 'linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231))' } },
+                    e('td', { style: { padding: '10px', fontWeight: 'bold', color: '#7f538e' } }, 'Точка роста ' + (index+1).toString()),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col1),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col2),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col3),
+                    e('td', { style: { padding: '10px', textAlign: 'center', fontWeight: 'bold' } }, value.col4)
+                  )
                 )
               )
             )
           )
-        )
-      )
+        ),
+    ),
+
+    
+
+
     );
+  }
+
+  // Функция получения логина пользователя из localStorage
+  getUserLogin() {
+    // Сначала проверяем основные ключи
+    let login = localStorage.getItem('userLogin') || localStorage.getItem('login');
+    
+    // Проверяем Tilda Members профиль (основной источник)
+    if (!login) {
+      // Ищем ключи профиля Tilda Members (формат: tilda_members_profile{projectid})
+      for (let key in localStorage) {
+        if (key.startsWith('tilda_members_profile') && !key.endsWith('_timestamp')) {
+          try {
+            const profileData = JSON.parse(localStorage.getItem(key));
+            if (profileData && profileData.login) {
+              login = profileData.login;
+              break;
+            }
+          } catch (e) {
+            console.log('Ошибка парсинга профиля Tilda:', e);
+          }
+        }
+      }
+    }
+    
+    // Альтернативная проверка старых ключей авторизации
+    if (!login) {
+      const tildaAuth = localStorage.getItem('tilda_members_auth');
+      if (tildaAuth) {
+        try {
+          const authData = JSON.parse(tildaAuth);
+          login = authData.email || authData.login;
+        } catch (e) {
+          console.log('Ошибка парсинга данных авторизации');
+        }
+      }
+    }
+    
+    return login;
+  }
+
+  // Функция получения данных из URL
+  getDataFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('data');
+    
+    if (encodedData) {
+      try {
+        const decodedData = decodeURIComponent(encodedData);
+        return decodedData;
+      } catch (error) {
+        console.warn('Ошибка при декодировании данных из URL:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // Функция сохранения расчета на backend
+  async saveCalculation() {
+    // Проверяем наличие результатов
+    if (!this.state.results) {
+      alert('Сначала необходимо выполнить расчет');
+      return;
+    }
+
+    // Получаем логин пользователя
+    const userLogin = this.getUserLogin();
+    if (!userLogin) {
+      alert('Необходимо войти в систему для сохранения расчета');
+      return;
+    }
+
+    // Получаем данные из URL
+    const calculationData = this.getDataFromURL();
+    if (!calculationData) {
+      alert('Данные расчета не найдены в URL');
+      return;
+    }
+
+    try {
+      const response = await fetch('https://194.146.242.64/api/calculs/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          login: userLogin,
+          data: calculationData
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      this.showNotification(`Расчет успешно сохранен! ID: ${result.id}`);
+      console.log('Расчет сохранен:', result);
+      
+    } catch (error) {
+      console.error('Ошибка при сохранении расчета:', error);
+      alert('Ошибка при сохранении расчета. Проверьте подключение к серверу.');
+    }
   }
 }
 
