@@ -14,7 +14,7 @@ sudo openssl genrsa -out /etc/ssl/private/django-api.key 2048
 # Генерация самоподписанного сертификата
 sudo openssl req -new -x509 -key /etc/ssl/private/django-api.key \
     -out /etc/ssl/certs/django-api.crt -days 365 \
-    -subj "/C=RU/ST=Moscow/L=Moscow/O=Django API/CN=194.146.242.64"
+    -subj "/C=RU/ST=Moscow/L=Moscow/O=Django API/CN=89.111.153.184"
 
 # Установка правильных прав доступа
 sudo chmod 600 /etc/ssl/private/django-api.key
@@ -54,7 +54,7 @@ if [ $? -eq 0 ]; then
     echo "🎉 Настройка завершена!"
     echo ""
     echo "📋 Что было сделано:"
-    echo "  ✅ Создан SSL сертификат для 194.146.242.64"
+    echo "  ✅ Создан SSL сертификат для 89.111.153.184"
     echo "  ✅ Настроен Nginx для HTTPS на порту 2000"
     echo "  ✅ Настроено проксирование на 127.0.0.1:2000"
     echo "  ✅ Добавлены CORS заголовки"
