@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-+&w+kzj+c9j9r%m68&()@yrd_lx66wthur@px0v(w_l6@0jj-v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '194.146.242.64', '89.111.153.184', 'api.alkhimiyadushi.ru']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '194.146.242.64', '89.111.153.184', 'api.alkhimiyadushi.ru', 'https://alkhimiyadushi.ru']
 
-CSRF_TRUSTED_ORIGINS = ['https://0.0.0.0', 'https://localhost', 'https://127.0.0.1','https://api.alkhimiyadushi.ru', 'https://194.146.242.64', 'https://89.111.153.184']
+CSRF_TRUSTED_ORIGINS = ['https://alkhimiyadushi.ru', 'https://0.0.0.0', 'https://localhost', 'https://127.0.0.1','https://api.alkhimiyadushi.ru', 'https://194.146.242.64', 'https://89.111.153.184']
 
 
 # Application definition

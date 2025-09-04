@@ -1331,7 +1331,7 @@ class MatrixCalculator extends React.Component {
             } 
           },
           e('img', { 
-            src: 'https://89.111.153.184/images/dollar.svg',
+            src: 'https://api.alkhimiyadushi.ru/images/dollar.svg',
             height: '40',
             style: { 
               marginBottom: '-40px',
@@ -2677,7 +2677,7 @@ class MatrixCalculator extends React.Component {
     }
 
     try {
-      const response = await fetch('https://89.111.153.184/api/calculs/', {
+      const response = await fetch('https://api.alkhimiyadushi.ru/api/calculs/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
