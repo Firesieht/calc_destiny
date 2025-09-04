@@ -583,7 +583,9 @@ class MatrixCalculator extends React.Component {
 
   // Функция поиска программы по ключу
   findProgram(key) {
+    
     if (this.getUserLogin()) {
+      
       return ANCESTRAL_PROGRAMS[key] || null;
     }
     return UNREGISTERED_PROGRAMS[key] || null;
@@ -597,6 +599,36 @@ class MatrixCalculator extends React.Component {
     // Функция добавления программы, если она найдена
     const addProgram = (key, source, calculation) => {
       const program = this.findProgram(key);
+      
+      if (key.includes('7,19') && !foundPrograms.some(p => p.id === '7,19')) {
+        foundPrograms.push({
+          ...ANCESTRAL_PROGRAMS['7,19'],
+          source,
+          calculation,
+          code: key
+        })
+      }
+
+      if (this.getUserLogin()) {
+        if (key.includes('5,6') && !foundPrograms.some(p => p.id === '5,6')) {
+          foundPrograms.push({
+            ...ANCESTRAL_PROGRAMS['5,6'],
+            source,
+            calculation,
+            code: key
+          })
+        }
+
+        if (key.includes('3,9') && !foundPrograms.some(p => p.id === '3,9')) {
+          foundPrograms.push({
+            ...ANCESTRAL_PROGRAMS['3,9'],
+            source,
+            calculation,
+            code: key
+          })
+        }
+      }
+
       if (program && !foundPrograms.some(p => p.id === program.id)) {
         foundPrograms.push({
           ...program,
@@ -612,37 +644,37 @@ class MatrixCalculator extends React.Component {
       // 1 колено
       addProgram(this.createProgramKey(b, t, this.reduceNumber(b + t)), 'Мужской род - 1 колено Небо', `${b} - ${t} - ${this.reduceNumber(b + t)}`);
       addProgram(this.createProgramKey(a, t, this.reduceNumber(a + t)), 'Мужской род - 1 колено Земля', `${a} - ${t} - ${this.reduceNumber(a + t)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(t + t), this.reduceNumber(b + a + t * 2)), 'Мужской род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(t + t)} - ${this.reduceNumber(b + a + t * 2)}`);
-      if (!this.getUserLogin()) {
+      addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(t + t), this.reduceNumber(this.reduceNumber(b + a) + this.reduceNumber(t + t))), 'Мужской род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(t + t)} - ${this.reduceNumber(this.reduceNumber(b + a) + this.reduceNumber(t + t))}`);
+      if (this.getUserLogin()) {
         // 2 колено
         addProgram(this.createProgramKey(k, v2, this.reduceNumber(k + v2)), 'Мужской род - 2 колено Небо', `${k} - ${v2} - ${this.reduceNumber(k + v2)}`);
         addProgram(this.createProgramKey(j, v2, this.reduceNumber(j + v2)), 'Мужской род - 2 колено Земля', `${j} - ${v2} - ${this.reduceNumber(j + v2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(v2 + v2), this.reduceNumber(k + j + v2 * 2)), 'Мужской род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(v2 + v2)} - ${this.reduceNumber(k + j + v2 * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(v2 + v2), this.reduceNumber(this.reduceNumber(k + j)+this.reduceNumber(v2 + v2))), 'Мужской род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(v2 + v2)} - ${this.reduceNumber(this.reduceNumber(k + j)+this.reduceNumber(v2 + v2))}`);
         
         // 3 колено
         addProgram(this.createProgramKey(g, u2, this.reduceNumber(g + u2)), 'Мужской род - 3 колено Небо', `${g} - ${u2} - ${this.reduceNumber(g + u2)}`);
         addProgram(this.createProgramKey(f, u2, this.reduceNumber(f + u2)), 'Мужской род - 3 колено Земля', `${f} - ${u2} - ${this.reduceNumber(f + u2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(u2 + u2), this.reduceNumber(g + f + u2 * 2)), 'Мужской род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(u2 + u2)} - ${this.reduceNumber(g + f + u2 * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(u2 + u2), this.reduceNumber(this.reduceNumber(u2 + u2)+this.reduceNumber(g + f))), 'Мужской род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(u2 + u2)} - ${this.reduceNumber(this.reduceNumber(u2 + u2)+this.reduceNumber(g + f))}`);
         
         // 4 колено
         addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
         addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Мужской род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(e + e), this.reduceNumber(z + z), this.reduceNumber(e + e + z * 2)), 'Мужской род - 4 колено Целостная', `${this.reduceNumber(e + e)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + e + z * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(e + e), this.reduceNumber(z + z), this.reduceNumber(this.reduceNumber(e + e)+this.reduceNumber(z + z))), 'Мужской род - 4 колено Целостная', `${this.reduceNumber(e + e)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(this.reduceNumber(e + e)+this.reduceNumber(z + z))}`);
         
         // 5 колено
         addProgram(this.createProgramKey(i, x2, this.reduceNumber(i + x2)), 'Мужской род - 5 колено Небо', `${i} - ${x2} - ${this.reduceNumber(i + x2)}`);
         addProgram(this.createProgramKey(h, x2, this.reduceNumber(h + x2)), 'Мужской род - 5 колено Земля', `${h} - ${x2} - ${this.reduceNumber(h + x2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(i + h), this.reduceNumber(x2 + x2), this.reduceNumber(i + h + x2 * 2)), 'Мужской род - 5 колено Целостная', `${this.reduceNumber(i + h)} - ${this.reduceNumber(x2 + x2)} - ${this.reduceNumber(i + h + x2 * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(i + h), this.reduceNumber(x2 + x2), this.reduceNumber(this.reduceNumber(i + h) + this.reduceNumber(x2 + x2))), 'Мужской род - 5 колено Целостная', `${this.reduceNumber(i + h)} - ${this.reduceNumber(x2 + x2)} - ${this.reduceNumber(this.reduceNumber(i + h) + this.reduceNumber(x2 + x2))}`);
         
         // 6 колено
         addProgram(this.createProgramKey(m, y2, this.reduceNumber(m + y2)), 'Мужской род - 6 колено Небо', `${m} - ${y2} - ${this.reduceNumber(m + y2)}`);
         addProgram(this.createProgramKey(l, y2, this.reduceNumber(l + y2)), 'Мужской род - 6 колено Земля', `${l} - ${y2} - ${this.reduceNumber(l + y2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(y2 + y2), this.reduceNumber(m + l + y2 * 2)), 'Мужской род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(y2 + y2)} - ${this.reduceNumber(m + l + y2 * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(y2 + y2), this.reduceNumber(this.reduceNumber(m + l)+this.reduceNumber(y2 + y2))), 'Мужской род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(y2 + y2)} - ${this.reduceNumber(this.reduceNumber(m + l)+this.reduceNumber(y2 + y2))}`);
         
         // 7 колено
         addProgram(this.createProgramKey(d, w, this.reduceNumber(d + w)), 'Мужской род - 7 колено Небо', `${d} - ${w} - ${this.reduceNumber(d + w)}`);
         addProgram(this.createProgramKey(c, w, this.reduceNumber(c + w)), 'Мужской род - 7 колено Земля', `${c} - ${w} - ${this.reduceNumber(c + w)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(d + c), this.reduceNumber(w + w), this.reduceNumber(d + c + w * 2)), 'Мужской род - 7 колено Целостная', `${this.reduceNumber(d + c)} - ${this.reduceNumber(w + w)} - ${this.reduceNumber(d + c + w * 2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(d + c), this.reduceNumber(w + w), this.reduceNumber(this.reduceNumber(d + c) + this.reduceNumber(w + w))), 'Мужской род - 7 колено Целостная', `${this.reduceNumber(d + c)} - ${this.reduceNumber(w + w)} - ${this.reduceNumber(this.reduceNumber(d + c) + this.reduceNumber(w + w))}`);
       }
     }
 
@@ -651,37 +683,37 @@ class MatrixCalculator extends React.Component {
       // 1 колено
       addProgram(this.createProgramKey(b, n, this.reduceNumber(b + n)), 'Женский род - 1 колено Небо', `${b} - ${n} - ${this.reduceNumber(b + n)}`);
       addProgram(this.createProgramKey(a, q, this.reduceNumber(a + q)), 'Женский род - 1 колено Земля', `${a} - ${q} - ${this.reduceNumber(a + q)}`);
-      addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(n + q), this.reduceNumber(b + n + a + q)), 'Женский род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(n + q)} - ${this.reduceNumber(b + n + a + q)}`);
-      if (!this.getUserLogin()) {
+      addProgram(this.createProgramKey(this.reduceNumber(b + a), this.reduceNumber(n + q), this.reduceNumber(this.reduceNumber(b + a)+this.reduceNumber(n + q))), 'Женский род - 1 колено Целостная', `${this.reduceNumber(b + a)} - ${this.reduceNumber(n + q)} - ${this.reduceNumber(this.reduceNumber(b + a)+this.reduceNumber(n + q))}`);
+      if (this.getUserLogin()) {
         // 2 колено
         addProgram(this.createProgramKey(k, p2, this.reduceNumber(k + p2)), 'Женский род - 2 колено Небо', `${k} - ${p2} - ${this.reduceNumber(k + p2)}`);
         addProgram(this.createProgramKey(j, s2, this.reduceNumber(j + s2)), 'Женский род - 2 колено Земля', `${j} - ${s2} - ${this.reduceNumber(j + s2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(p2 + s2), this.reduceNumber(k + j + p2 + s2)), 'Женский род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(p2 + s2)} - ${this.reduceNumber(k + j + p2 + s2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(k + j), this.reduceNumber(p2 + s2), this.reduceNumber(this.reduceNumber(k + j) +  this.reduceNumber(p2 + s2))), 'Женский род - 2 колено Целостная', `${this.reduceNumber(k + j)} - ${this.reduceNumber(p2 + s2)} - ${this.reduceNumber(this.reduceNumber(k + j) +  this.reduceNumber(p2 + s2))}`);
         
         // 3 колено
         addProgram(this.createProgramKey(g, o2, this.reduceNumber(g + o2)), 'Женский род - 3 колено Небо', `${g} - ${o2} - ${this.reduceNumber(g + o2)}`);
         addProgram(this.createProgramKey(f, r2, this.reduceNumber(f + r2)), 'Женский род - 3 колено Земля', `${f} - ${r2} - ${this.reduceNumber(f + r2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(o2 + r2), this.reduceNumber(g + f + o2 + r2)), 'Женский род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(o2 + r2)} - ${this.reduceNumber(g + f + o2 + r2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(g + f), this.reduceNumber(o2 + r2), this.reduceNumber(this.reduceNumber(g + f)+this.reduceNumber(o2 + r2))), 'Женский род - 3 колено Целостная', `${this.reduceNumber(g + f)} - ${this.reduceNumber(o2 + r2)} - ${this.reduceNumber(this.reduceNumber(g + f)+this.reduceNumber(o2 + r2))}`);
         
         // 4 колено
         addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Небо', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
         addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Женский род - 4 колено Земля', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(e + z), this.reduceNumber(z + z), this.reduceNumber(e + z + e + z)), 'Женский род - 4 колено Целостная', `${this.reduceNumber(e + z)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(e + z + e + z)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(e + z), this.reduceNumber(z + z), this.reduceNumber(this.reduceNumber(e + z) + this.reduceNumber(z + z))), 'Женский род - 4 колено Целостная', `${this.reduceNumber(e + z)} - ${this.reduceNumber(z + z)} - ${this.reduceNumber(this.reduceNumber(e + z) + this.reduceNumber(z + z))}`);
         
         // 5 колено
         addProgram(this.createProgramKey(d, q, this.reduceNumber(d + q)), 'Женский род - 5 колено Небо', `${d} - ${q} - ${this.reduceNumber(d + q)}`);
         addProgram(this.createProgramKey(h, o2, this.reduceNumber(h + o2)), 'Женский род - 5 колено Земля', `${h} - ${o2} - ${this.reduceNumber(h + o2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(d + h), this.reduceNumber(q + o2), this.reduceNumber(d + h + q + o2)), 'Женский род - 5 колено Целостная', `${this.reduceNumber(d + h)} - ${this.reduceNumber(q + o2)} - ${this.reduceNumber(d + h + q + o2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(d + h), this.reduceNumber(q + o2), this.reduceNumber(this.reduceNumber(d + h) + this.reduceNumber(q + o2))), 'Женский род - 5 колено Целостная', `${this.reduceNumber(d + h)} - ${this.reduceNumber(q + o2)} - ${this.reduceNumber(this.reduceNumber(d + h) + this.reduceNumber(q + o2))}`);
         
         // 6 колено
         addProgram(this.createProgramKey(m, s2, this.reduceNumber(m + s2)), 'Женский род - 6 колено Небо', `${m} - ${s2} - ${this.reduceNumber(m + s2)}`);
         addProgram(this.createProgramKey(l, p2, this.reduceNumber(l + p2)), 'Женский род - 6 колено Земля', `${l} - ${p2} - ${this.reduceNumber(l + p2)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(s2 + p2), this.reduceNumber(m + l + s2 + p2)), 'Женский род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(s2 + p2)} - ${this.reduceNumber(m + l + s2 + p2)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(m + l), this.reduceNumber(s2 + p2), this.reduceNumber(this.reduceNumber(m + l) + this.reduceNumber(s2 + p2))), 'Женский род - 6 колено Целостная', `${this.reduceNumber(m + l)} - ${this.reduceNumber(s2 + p2)} - ${this.reduceNumber(this.reduceNumber(m + l) + this.reduceNumber(s2 + p2))}`);
         
         // 7 колено
         addProgram(this.createProgramKey(i, r2, this.reduceNumber(i + r2)), 'Женский род - 7 колено Небо', `${i} - ${r2} - ${this.reduceNumber(i + r2)}`);
         addProgram(this.createProgramKey(c, n, this.reduceNumber(c + n)), 'Женский род - 7 колено Земля', `${c} - ${n} - ${this.reduceNumber(c + n)}`);
-        addProgram(this.createProgramKey(this.reduceNumber(i + c), this.reduceNumber(r2 + n), this.reduceNumber(i + c + r2 + n)), 'Женский род - 7 колено Целостная', `${this.reduceNumber(i + c)} - ${this.reduceNumber(r2 + n)} - ${this.reduceNumber(i + c + r2 + n)}`);
+        addProgram(this.createProgramKey(this.reduceNumber(i + c), this.reduceNumber(r2 + n), this.reduceNumber(this.reduceNumber(i + c) +  this.reduceNumber(r2 + n))), 'Женский род - 7 колено Целостная', `${this.reduceNumber(i + c)} - ${this.reduceNumber(r2 + n)} - ${this.reduceNumber(this.reduceNumber(i + c) +  this.reduceNumber(r2 + n))}`);
       }
     }
 
@@ -692,11 +724,58 @@ class MatrixCalculator extends React.Component {
     addProgram(this.createProgramKey(c, l, h), 'Личный квадрат', `${c} - ${l} - ${h}`);
     addProgram(this.createProgramKey(d, m, i), 'Личный квадрат', `${d} - ${m} - ${i}`);
 
+    if (this.getUserLogin()){
+      addProgram(this.createProgramKey(t, b, this.reduceNumber(t+b)), 'Личный квадрат', `${t} - ${b} - ${this.reduceNumber(t+b)}`);
+      addProgram(this.createProgramKey(v, k, this.reduceNumber(v+k)), 'Личный квадрат', `${v} - ${k} - ${this.reduceNumber(v+k)}`);
+      addProgram(this.createProgramKey(u, g, this.reduceNumber(u+g)), 'Личный квадрат', `${u} - ${g} - ${this.reduceNumber(u+g)}`);
+      addProgram(this.createProgramKey(b, n, this.reduceNumber(b+n)), 'Личный квадрат', `${b} - ${n} - ${this.reduceNumber(b+n)}`);
+      addProgram(this.createProgramKey(k, p, this.reduceNumber(k+p)), 'Личный квадрат', `${k} - ${p} - ${this.reduceNumber(k+p)}`);
+      addProgram(this.createProgramKey(g, o, this.reduceNumber(g+o)), 'Личный квадрат', `${g} - ${o} - ${this.reduceNumber(g+o)}`);
+      addProgram(this.createProgramKey(n, c, this.reduceNumber(n+c)), 'Личный квадрат', `${n} - ${c} - ${this.reduceNumber(n+c)}`);
+      addProgram(this.createProgramKey(p, l, this.reduceNumber(p+l)), 'Личный квадрат', `${p} - ${l} - ${this.reduceNumber(p+l)}`);
+      addProgram(this.createProgramKey(o, h, this.reduceNumber(o+h)), 'Личный квадрат', `${o} - ${h} - ${this.reduceNumber(o+h)}`);
+      addProgram(this.createProgramKey(c, w, this.reduceNumber(c+w)), 'Личный квадрат', `${c} - ${w} - ${this.reduceNumber(c+w)}`);
+      addProgram(this.createProgramKey(i, y, this.reduceNumber(i+y)), 'Личный квадрат', `${i} - ${y} - ${this.reduceNumber(i+y)}`);
+      addProgram(this.createProgramKey(h, x, this.reduceNumber(h+x)), 'Личный квадрат', `${h} - ${x} - ${this.reduceNumber(h+x)}`);
+      addProgram(this.createProgramKey(w, d, this.reduceNumber(w+d)), 'Личный квадрат', `${w} - ${d} - ${this.reduceNumber(w+d)}`);
+      addProgram(this.createProgramKey(y, m, this.reduceNumber(y+m)), 'Личный квадрат', `${y} - ${m} - ${this.reduceNumber(y+m)}`);
+      addProgram(this.createProgramKey(d, q, this.reduceNumber(d+q)), 'Личный квадрат', `${d} - ${q} - ${this.reduceNumber(d+q)}`);
+      addProgram(this.createProgramKey(m, s, this.reduceNumber(m+s)), 'Личный квадрат', `${m} - ${s} - ${this.reduceNumber(m+s)}`);
+      addProgram(this.createProgramKey(i, r, this.reduceNumber(i+r)), 'Личный квадрат', `${i} - ${r} - ${this.reduceNumber(i+r)}`);
+      addProgram(this.createProgramKey(q, a, this.reduceNumber(q+a)), 'Личный квадрат', `${q} - ${a} - ${this.reduceNumber(q+a)}`);
+      addProgram(this.createProgramKey(s, j, this.reduceNumber(s+j)), 'Личный квадрат', `${s} - ${j} - ${this.reduceNumber(s+j)}`);
+      addProgram(this.createProgramKey(r, f, this.reduceNumber(r+f)), 'Личный квадрат', `${r} - ${f} - ${this.reduceNumber(r+f)}`);
+      addProgram(this.createProgramKey(a, t, this.reduceNumber(a+t)), 'Личный квадрат', `${a} - ${t} - ${this.reduceNumber(a+t)}`);
+      addProgram(this.createProgramKey(j, v, this.reduceNumber(j+v)), 'Личный квадрат', `${j} - ${v} - ${this.reduceNumber(j+v)}`);
+      addProgram(this.createProgramKey(f, u, this.reduceNumber(f+u)), 'Личный квадрат', `${f} - ${u} - ${this.reduceNumber(f+u)}`);
+    }
     // Родовой квадрат
     addProgram(this.createProgramKey(t, v, u), 'Родовой квадрат', `${t} - ${v} - ${u}`);
     addProgram(this.createProgramKey(n, p, o), 'Родовой квадрат', `${n} - ${p} - ${o}`);
     addProgram(this.createProgramKey(w, y, x), 'Родовой квадрат', `${w} - ${y} - ${x}`);
     addProgram(this.createProgramKey(q, s, r), 'Родовой квадрат', `${q} - ${s} - ${r}`);
+    
+    if (this.getUserLogin()){
+      addProgram(this.createProgramKey(t, n, this.reduceNumber(t+n)), 'Родовой квадрат', `${t} - ${n} - ${t+n}`);
+      addProgram(this.createProgramKey(n, w, this.reduceNumber(n+w)), 'Родовой квадрат', `${n} - ${w} - ${n+w}`);
+      addProgram(this.createProgramKey(w, q, this.reduceNumber(w+q)), 'Родовой квадрат', `${w} - ${q} - ${w+q}`);
+      addProgram(this.createProgramKey(q, t, this.reduceNumber(q+t)), 'Родовой квадрат', `${q} - ${t} - ${q+t}`);
+      addProgram(this.createProgramKey(t, g, this.reduceNumber(t+g)), 'Родовой квадрат', `${t} - ${g} - ${t+g}`);
+      addProgram(this.createProgramKey(n, h, this.reduceNumber(n+h)), 'Родовой квадрат', `${n} - ${h} - ${n+h}`);
+      addProgram(this.createProgramKey(w, i, this.reduceNumber(w+i)), 'Родовой квадрат', `${w} - ${i} - ${w+i}`);
+      addProgram(this.createProgramKey(q, f, this.reduceNumber(q+f)), 'Родовой квадрат', `${q} - ${f} - ${q+f}`);
+      addProgram(this.createProgramKey(g, n, this.reduceNumber(g+n)), 'Родовой квадрат', `${g} - ${n} - ${g+n}`);
+      addProgram(this.createProgramKey(h, w, this.reduceNumber(h+w)), 'Родовой квадрат', `${h} - ${w} - ${h+w}`);
+      addProgram(this.createProgramKey(i, q, this.reduceNumber(i+q)), 'Родовой квадрат', `${i} - ${q} - ${i+q}`);
+      addProgram(this.createProgramKey(f, t, this.reduceNumber(f+t)), 'Родовой квадрат', `${f} - ${t} - ${f+t}`);
+      addProgram(this.createProgramKey(u, b, this.reduceNumber(u+b)), 'Родовой квадрат', `${u} - ${b} - ${u+b}`);
+      addProgram(this.createProgramKey(b, o, this.reduceNumber(b+o)), 'Родовой квадрат', `${b} - ${o} - ${b+o}`);
+      addProgram(this.createProgramKey(c, x, this.reduceNumber(c+x)), 'Родовой квадрат', `${c} - ${x} - ${c+x}`);
+      addProgram(this.createProgramKey(x, d, this.reduceNumber(x+d)), 'Родовой квадрат', `${x} - ${d} - ${x+d}`);
+      addProgram(this.createProgramKey(d, r, this.reduceNumber(d+r)), 'Родовой квадрат', `${d} - ${r} - ${d+r}`);
+      addProgram(this.createProgramKey(r, a, this.reduceNumber(r+a)), 'Родовой квадрат', `${r} - ${a} - ${r+a}`);
+      addProgram(this.createProgramKey(a, u, this.reduceNumber(a+u)), 'Родовой квадрат', `${a} - ${u} - ${a+u}`);
+    }
 
     // Таблица чакр
     addProgram(this.createProgramKey(b, a, this.reduceNumber(b + a)), 'Таблица чакр', `${b} - ${a} - ${this.reduceNumber(b + a)}`);
@@ -709,17 +788,51 @@ class MatrixCalculator extends React.Component {
     addProgram(this.createProgramKey(l, m, this.reduceNumber(l + m)), 'Таблица чакр', `${l} - ${m} - ${this.reduceNumber(l + m)}`);
     addProgram(this.createProgramKey(c, d, this.reduceNumber(c + d)), 'Таблица чакр', `${c} - ${d} - ${this.reduceNumber(c + d)}`);
 
+    if (this.getUserLogin()){
+      addProgram(this.createProgramKey(b, k, this.reduceNumber(b + k)), 'Таблица чакр', `${b} - ${k} - ${this.reduceNumber(b + k)}`);
+      addProgram(this.createProgramKey(k, g, this.reduceNumber(k + g)), 'Таблица чакр', `${k} - ${g} - ${this.reduceNumber(k + g)}`);
+      addProgram(this.createProgramKey(g, n, this.reduceNumber(g + n)), 'Таблица чакр', `${g} - ${n} - ${this.reduceNumber(g + n)}`);
+      addProgram(this.createProgramKey(n, t, this.reduceNumber(n + t)), 'Таблица чакр', `${n} - ${t} - ${this.reduceNumber(n + t)}`);
+      addProgram(this.createProgramKey(t, e, this.reduceNumber(t + e)), 'Таблица чакр', `${t} - ${e} - ${this.reduceNumber(t + e)}`);
+      addProgram(this.createProgramKey(e, i, this.reduceNumber(e + i)), 'Таблица чакр', `${e} - ${i} - ${this.reduceNumber(e + i)}`);
+      addProgram(this.createProgramKey(i, m, this.reduceNumber(i + m)), 'Таблица чакр', `${i} - ${m} - ${this.reduceNumber(i + m)}`);
+      addProgram(this.createProgramKey(m, d, this.reduceNumber(m + d)), 'Таблица чакр', `${m} - ${d} - ${this.reduceNumber(m + d)}`);
+      addProgram(this.createProgramKey(a, j, this.reduceNumber(a + k)), 'Таблица чакр', `${a} - ${j} - ${this.reduceNumber(a + k)}`);
+      addProgram(this.createProgramKey(j, f, this.reduceNumber(j + f)), 'Таблица чакр', `${j} - ${f} - ${this.reduceNumber(j + f)}`);
+      addProgram(this.createProgramKey(f, q, this.reduceNumber(f + q)), 'Таблица чакр', `${f} - ${q} - ${this.reduceNumber(f + q)}`);
+      addProgram(this.createProgramKey(q, w, this.reduceNumber(q + w)), 'Таблица чакр', `${q} - ${w} - ${this.reduceNumber(q + w)}`);
+      addProgram(this.createProgramKey(w, z, this.reduceNumber(w + z)), 'Таблица чакр', `${w} - ${z} - ${this.reduceNumber(w + z)}`);
+      addProgram(this.createProgramKey(z, h, this.reduceNumber(z + h)), 'Таблица чакр', `${z} - ${h} - ${this.reduceNumber(z + h)}`);
+      addProgram(this.createProgramKey(h, l, this.reduceNumber(h + l)), 'Таблица чакр', `${h} - ${l} - ${this.reduceNumber(h + l)}`);
+      addProgram(this.createProgramKey(l, c, this.reduceNumber(l + c)), 'Таблица чакр', `${l} - ${c} - ${this.reduceNumber(l + c)}`);
+      addProgram(this.createProgramKey(b, a, this.reduceNumber(b + a)), 'Таблица чакр', `${b} - ${a} - ${this.reduceNumber(b + a)}`);
+      addProgram(this.createProgramKey(k, j, this.reduceNumber(k + j)), 'Таблица чакр', `${k} - ${j} - ${this.reduceNumber(k + j)}`);
+      addProgram(this.createProgramKey(g, f, this.reduceNumber(g + f)), 'Таблица чакр', `${g} - ${f} - ${this.reduceNumber(g + f)}`);
+      addProgram(this.createProgramKey(n, q, this.reduceNumber(n + q)), 'Таблица чакр', `${n} - ${q} - ${this.reduceNumber(n + q)}`);
+      addProgram(this.createProgramKey(t, w, this.reduceNumber(t + w)), 'Таблица чакр', `${t} - ${w} - ${this.reduceNumber(t + w)}`);
+      addProgram(this.createProgramKey(e, z, this.reduceNumber(e + z)), 'Таблица чакр', `${e} - ${z} - ${this.reduceNumber(e + z)}`);
+      addProgram(this.createProgramKey(i, h, this.reduceNumber(i + h)), 'Таблица чакр', `${i} - ${h} - ${this.reduceNumber(i + h)}`);
+      addProgram(this.createProgramKey(m, l, this.reduceNumber(m + l)), 'Таблица чакр', `${m} - ${l} - ${this.reduceNumber(m + l)}`);
+    }
+
     //Таблица предназаначений
-    addProgram(this.createProgramKey(this.reduceNumber(b + d), this.reduceNumber(a + c), this.reduceNumber(b + d + a + c)), 'Таблица предназаначений', `${this.reduceNumber(b + d)} - ${this.reduceNumber(a + c)} - ${this.reduceNumber(b + d + a + c)}`);
-    addProgram(this.createProgramKey(this.reduceNumber(t + w), this.reduceNumber(n + q), this.reduceNumber(t + w + n + q)), 'Таблица предназаначений', `${this.reduceNumber(t + w)} - ${this.reduceNumber(n + q)} - ${this.reduceNumber(t + w + n + q)}`);
-    addProgram(this.createProgramKey(this.reduceNumber(b + d + a + c), this.reduceNumber(t + w + n + q), this.reduceNumber(b + d + a + c + t + w + n + q)), 'Таблица предназаначений', `${this.reduceNumber(b + d + a + c)} - ${this.reduceNumber(t + w + n + q)} - ${this.reduceNumber(b + d + a + c + t + w + n + q)}`);
-    addProgram(this.createProgramKey(this.reduceNumber(b + d + a + c + t + w + n + q), this.reduceNumber(t + w + n + q), this.reduceNumber(this.reduceNumber(b + d + a + c + t + w + n + q) + this.reduceNumber(t + w + n + q))), 'Таблица предназаначений', `${this.reduceNumber(b + d + a + c + t + w + n + q)} - ${this.reduceNumber(t + w + n + q)} - ${this.reduceNumber(this.reduceNumber(b + d + a + c + t + w + n + q) + this.reduceNumber(t + w + n + q))}`);
+    let bd = this.reduceNumber(b + d);
+    let ac = this.reduceNumber(a + c);
+    let tw = this.reduceNumber(t + w);
+    let nq = this.reduceNumber(n + q);
+    let twnq = this.reduceNumber(tw + nq);
+    let abcd = this.reduceNumber(ac + bd);
+
+    addProgram(this.createProgramKey(bd, ac, this.reduceNumber(bd  + ac)), 'Таблица предназаначений', `${bd} - ${ac} - ${this.reduceNumber(bd + ac)}`);
+    addProgram(this.createProgramKey(tw, nq, this.reduceNumber(tw + nq)), 'Таблица предназаначений', `${tw} - ${nq} - ${this.reduceNumber(tw + nq)}`);
+    addProgram(this.createProgramKey(this.reduceNumber(bd + ac), this.reduceNumber(tw + nq), this.reduceNumber(this.reduceNumber(bd + ac) + this.reduceNumber(tw + nq))), 'Таблица предназаначений', `${abcd} - ${twnq} - ${this.reduceNumber(abcd +twnq)}`);
+    addProgram(this.createProgramKey(this.reduceNumber(abcd + twnq), twnq, this.reduceNumber(this.reduceNumber(abcd + twnq) + twnq)), 'Таблица предназаначений', `${this.reduceNumber(abcd + twnq)} - ${twnq} - ${this.reduceNumber(this.reduceNumber(abcd + twnq) + twnq)}`);
 
     // Двухзначные программы
-    addProgram(this.createProgramKey(7, 19), 'Достаток', `${7} - ${19}`);
-    addProgram(this.createProgramKey(5, 6), 'Красота и уют в доме', `${5} - ${6}`);
-    addProgram(this.createProgramKey(3, 9), 'Преодоление', `${3} - ${9}`);
-
+    
+    // addProgram(this.createProgramKey(7, 19), 'Достаток', `${7} - ${19}`);
+    // addProgram(this.createProgramKey(5, 6), 'Красота и уют в доме', `${5} - ${6}`);
+    // addProgram(this.createProgramKey(3, 9), 'Преодоление', `${3} - ${9}`);
     return foundPrograms;
   }
 
@@ -1218,7 +1331,7 @@ class MatrixCalculator extends React.Component {
             } 
           },
           e('img', { 
-            src: 'https://194.146.242.64/images/dollar.svg',
+            src: 'https://89.111.153.184/images/dollar.svg',
             height: '40',
             style: { 
               marginBottom: '-40px',
@@ -2564,7 +2677,7 @@ class MatrixCalculator extends React.Component {
     }
 
     try {
-      const response = await fetch('https://194.146.242.64/api/calculs/', {
+      const response = await fetch('https://89.111.153.184/api/calculs/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
