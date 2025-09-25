@@ -76,112 +76,8 @@ const UNREGISTERED_PROGRAMS = {
   '7,11,18': { id: 75, name: 'Боевой маг' },
 };
 
-const ANCESTRAL_PROGRAMS = {
-  '5,15,20': { id: 1, name: 'Бунтарь' },
-  '7,12,19': { id: 2, name: 'Воин' },
-  '3,7,22': { id: 3, name: 'Узник; несвободная душа' },
-  '5,6,17': { id: 4, name: 'Гордыня' },
-  '10,16,21': { id: 5, name: 'Духовный жрец' },
-  '6,6,18': { id: 6, name: 'Любовная магия' },
-  '9,9,18': { id: 7, name: 'Волшебник; не принятие знаний' },
-  '3,9,12': { id: 8, name: 'Одинокая женщина' },
-  '5,8,15': { id: 9, name: 'Предательства; страсти в семье' },
-  '6,8,20': { id: 10, name: 'Разочарование рода' },
-  '6,15,18': { id: 11, name: 'Темный маг' },
-  '3,9,21': { id: 12, name: 'Надзиратель' },
-  '8,11,15': { id: 13, name: 'Физическая агрессия' },
-  '6,11,17': { id: 14, name: 'Загубленный талант' },
-  '4,12,16': { id: 15, name: 'Император' },
-  '4,10,21': { id: 16, name: 'Угнетенная душа' },
-  '3,12,18': { id: 17, name: 'Физические страдания' },
-  '6,9,15': { id: 18, name: 'Мир страстей и сказок' },
-  '6,8,14': { id: 19, name: 'Диктатор' },
-  '3,10,13': { id: 20, name: 'Суицид' },
-  '3,19,22': { id: 21, name: 'Нерожденное дитя' },
-  '7,13,21': { id: 22, name: 'Разрушение; смерть многим душам' },
-  '6,14,20': { id: 23, name: 'Душа; которую принесли в жертву' },
-  '7,10,21': { id: 24, name: 'Воин веры' },
-  '3,10,20': { id: 25, name: 'Обман со стороны женщин; проблемы с материнством' },
-  '8,8,18': { id: 26, name: 'Страх разочарования; обмана' },
-  '4,9,22': { id: 27, name: 'Тюремная программа' },
-  '8,22,22': { id: 28, name: 'Тюремная программа' },
-  '5,10,15': { id: 29, name: 'Высокая духовная миссия объединения людей' },
-  '5,5,18': { id: 30, name: 'Магические знания' },
-  '7,19': { id: 31, name: 'Достаток' },
-  '5,11,16': { id: 32, name: 'Обесценивание' },
-  '10,11,19': { id: 33, name: 'Выгорание; вспышка' },
-  '7,14,21': { id: 34, name: 'Пытки; издевательства' },
-  '8,14,22': { id: 35, name: 'Скупость' },
-  '9,11,20': { id: 36, name: 'Вырождение рода' },
-  '3,11,19': { id: 37, name: 'Бесплодие' },
-  '7,13,20': { id: 38, name: 'Опасность в дороге; в движении вперед; в принятии решений' },
-  '7,7,18': { id: 39, name: 'Страх карьерной реализации; дороги' },
-  '4,11,20': { id: 40, name: 'Укрощение агрессии; дресировщик' },
-  '7,8,17': { id: 41, name: 'Особая миссия; эксклюзив' },
-  '5,14,19': { id: 42, name: 'Миллионер' },
-  '6,15,21': { id: 43, name: 'Разгул' },
-  '10,10,18': { id: 44, name: 'Страх доверия Богу' },
-  '11,11,18': { id: 45, name: 'Страх принятия магической силы' },
-  '6,12,18': { id: 46, name: 'Комплекс зависимых отношений' },
-  '9,10,19': { id: 47, name: 'Чистый поток' },
-  '7,15,22': { id: 48, name: 'Адреналин' },
-  '8,9,17': { id: 49, name: 'Сокрытие истины' },
-  '7,9,16': { id: 50, name: 'Молчание' },
-  '7,9,20': { id: 51, name: 'Никто не узнает' },
-  '8,10,16': { id: 52, name: 'Сговор; заговорщик' },
-  '6,7,19': { id: 53, name: 'Кругом виноват' },
-  '5,8,21': { id: 54, name: 'Нарушение иерархии' },
-  '5,8,13': { id: 55, name: 'Перестановка; чужое место' },
-  '8,9,19': { id: 56, name: 'Безнадега' },
-  '6,8,16': { id: 57, name: 'Хвастовство' },
-  '5,9,14': { id: 58, name: 'Месть' },
-  '5,6': { id: 59, name: 'Красота и уют в доме' },
-  '3,3,6': { id: 60, name: 'Женское обаяние' },
-  '6,7,13': { id: 61, name: 'Физическое насилие и эмоциональное унижение' },
-  '7,8,19': { id: 62, name: 'Ловушка' },
-  '5,12,17': { id: 63, name: 'Публичный позор' },
-  '5,13,18': { id: 64, name: 'Сакральная жертва' },
-  '9,13,22': { id: 65, name: 'Неупокоенные души' },
-  '9,11,16': { id: 66, name: 'Саморазрушение' },
-  '6,11,22': { id: 67, name: 'Манипулирование ребенком' },
-  '6,13,19': { id: 68, name: 'Избавление от старого' },
-  '5,17,22': { id: 69, name: 'Академические знания' },
-  '5,7,20': { id: 70, name: 'Изгнание из системы' },
-  '5,10,22': { id: 71, name: 'Инквизиция' },
-  '6,10,22': { id: 72, name: 'Холодный расчет' },
-  '2,7,9': { id: 73, name: 'Серый кардинал; закулисье' },
-  '6,12,21': { id: 74, name: 'Монах-однолюб' },
-  '7,11,18': { id: 75, name: 'Боевой маг' },
-  '4,11,20': { id: 76, name: 'Сильная воля' },
-  '10,11,17': { id: 77, name: 'Упущенный шанс' },
-  '5,6,19': { id: 78, name: 'Огонь любви' },
-  '3,17,20': { id: 79, name: 'Тайная любовь' },
-  '4,9,13': { id: 80, name: 'Конечность бытия' },
-  '3,13,17': { id: 81, name: 'Метаморфозы' },
-  '3,8,22': { id: 82, name: 'Мнимая любовь' },
-  '4,10,14': { id: 83, name: 'Нет веры в себя' },
-  '3,6,21': { id: 84, name: 'Любовь без границ' },
-  '3,9': { id: 85, name: 'Преодоление' },
-  '8,13,21': { id: 86, name: 'Системная ошибка' },
-  '6,7,17': { id: 87, name: 'Параллельная любовь' },
-  '3,8,11': { id: 88, name: 'Успешный правитель' },
-  '5,12,20': { id: 89, name: 'Жертва ради мечты' },
-  '8,12,20': { id: 90, name: 'Опустошение' },
-  '5,11,21': { id: 91, name: 'Подделка' },
-  '8,11,19': { id: 92, name: 'Хозяин своей судьбы' },
-  '5,7,16': { id: 93, name: 'Утрата авторитета' },
-  '6,10,14': { id: 94, name: 'Поворот судьбы' },
-  '6,9,21': { id: 95, name: 'Усыновление' },
-  '8,10,20': { id: 96, name: 'Освобождение' },
-  '3,15,15': { id: 97, name: 'Стерва' },
-  '6,16,22': { id: 98, name: 'Шутка-серьезность' },
-  '5,7,12': { id: 99, name: 'Сексуальность' },
-  '4,18,22': { id: 100, name: 'Растоптать веру' },
-  '3,5,20': { id: 101, name: 'Храм или скверна' },
-  '4,11,15': { id: 102, name: 'Амбиции' },
-  '6,10,16': { id: 103, name: 'Музей ценностей' },
-  '4,6,20': { id: 104, name: 'Энергия страсти' }
-};
+const ANCESTRAL_PROGRAMS = UNREGISTERED_PROGRAMS
+
 
 class MatrixCalculator extends React.Component {
   constructor(props) {
@@ -213,7 +109,8 @@ class MatrixCalculator extends React.Component {
     this.saveDataToURL = this.saveDataToURL.bind(this);
     this.saveToPDF = this.saveToPDF.bind(this);
     this.saveCalculation = this.saveCalculation.bind(this);
-
+    this.onLoginClick = this.onLoginClick.bind(this);
+    this.onLogoutClick = this.onLogoutClick.bind(this);
   }
   componentDidMount() {
     this.loadDataFromURL();
@@ -1151,6 +1048,16 @@ class MatrixCalculator extends React.Component {
     return null;
   }
 
+  onLoginClick(){
+    window.location.replace('members/login?redirecturl=cabinet')
+  }
+
+  onLogoutClick(){
+    localStorage.clear()
+    window.location.replace('members/login?redirecturl=cabinet')
+  }
+
+
   render() {
     const { formData, results, programs, chakras, purposes, karma, errors } = this.state;
     const hasErrors = Object.values(errors).some(error => error !== null);
@@ -1160,9 +1067,22 @@ class MatrixCalculator extends React.Component {
     }) && !hasErrors;
 
     return e('div', { className: 'matrix-calculator' },
+      e('div', {className: 'header'}, 
+        e('a', {href: '/'}, 
+          e('img', {
+            className: 'logo',
+            // src: 'https://api.alkhimiyadushi.ru/images/logo.webp',
+            src: 'logo.webp',
+          })
+        ),
+        e('div', {
+          className: 'login-btn',
+          onClick: (e) => this.onLoginClick()
+        }, 'Войти'),          
+      ),
       e('div', { className: 'calculator-container' },
         e('h1', null, 'Калькулятор Матрицы Судьбы'),
-        
+
         // Форма
         e('div', { className: 'form-section' },
           // Фамилия
@@ -2732,17 +2652,6 @@ class MatrixCalculator extends React.Component {
       console.log('Расчет сохранен:', result);
       
     } catch (error) {
-      console.log({
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          login: userLogin,
-          data: calculationData
-        })
-      })
-      console.log(response.json())
       console.error('Ошибка при сохранении расчета:', error);
       alert('Ошибка при сохранении расчета. Проверьте подключение к серверу.');
     }

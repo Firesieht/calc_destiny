@@ -13,6 +13,7 @@ body {
     background-color: #f5f5f5;
     min-height: 100vh;
     padding: 20px;
+    margin-top: 60px;
 }
 
 .calculator-container {
@@ -101,7 +102,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 200px;
+    width: 100%;
+    max-width: 200px;
     align-self: center;
 
 }
@@ -123,16 +125,18 @@ body {
     background-color: #28a745;
     color: white;
     border: none;
-    padding: 15px 30px;
+    padding: 5px 30px;
     border-radius: 8px;
     font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 200px;
+    width: 100%;
+    max-width: 200px;
     align-self: center;
 
 }
+
 
 .pdf-btn:hover {
     
@@ -185,12 +189,20 @@ body {
     border: 1px solid #dee2e6;
     transition: transform 0.2s ease;
 }
-
+.results_text_span{
+    font-weight: 600;
+}
 .result-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
+.results_text{
+    margin-top: 10px;
+    font-size: 18px;
+    display: flex;
+    flex-direction: row;
+    gap:5px;
+}
 /* Анимации */
 .scale-on-hover {
     transition: transform 0.3s ease;
@@ -200,19 +212,63 @@ body {
     transform: scale(1.005);
 }
 
+.svg-matrix{
+    min-width: 800px;
+    /* max-width: 1200px,  */
+}
+
+.header{
+    background: linear-gradient(135deg, rgb(237, 224, 241), rgb(224, 202, 231));
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: calc(100vw - 200px);
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    padding: 0px 100px;
+    justify-content: space-between;
+}
+
+.logo{
+    height: 60px;
+}
+
+.login-btn{
+    align-self: center;
+    background-color: #974795;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 100px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 20px;
+    width: 200px;
+}
 /* Адаптивность */
 @media (max-width: 768px) {
     .calculator-container {
         margin: 10px;
-        padding: 20px;
+        padding: 10px;
     }
     
     .matrix-calculator h1 {
         font-size: 2rem;
     }
+    .matrix-calculator {
+        padding: 0px;
+    }
     
     .date-group {
         grid-template-columns: 1fr;
+    }
+
+    .svg-dollar{
+        top:  33.5vw !important;
+        right: -14vw !important;
     }
     
     .results-grid {
@@ -231,4 +287,21 @@ body {
         width: 100%;
         max-width: 300px;
     }
+    body{
+        padding: 0px;
+    }
 } 
+
+@media (max-width: 500px) {
+    .svg-dollar{
+        top:  38vw !important;
+        right: -14vw !important;
+    }
+}
+
+@media (max-width: 350px) {
+    .svg-dollar{
+        top:  30vw !important;
+        right: -14vw !important;
+    }
+}
